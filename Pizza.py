@@ -1,9 +1,29 @@
 class Pizza:
-    def __init__(self, dough, size):
-        self.dough = ""
-        self.toppings = {}
-        self.size = ""
-        self.price = 0.0
+    def __init__(self, type):
+        if(type == 1):
+            self.dough = "White"
+            self.toppings = {1: "pepperoni"}
+            self.size = ""
+            self.price = 0.0
+        elif(type == 2):
+            # Cheese Pizza
+            self.dough = "White"
+            self.toppings = {}
+            self.size = ""
+            self.price = 0.0
+        elif(type == 3):
+            # Meat Lovers
+            self.dough = "White"
+            self.toppings = {1: "pepperoni", 2: "bacon", 4: "chicken"}
+            self.size = ""
+            self.price = 0.0
+        elif(type == 4):
+            self.dough = ""
+            self.toppings = {}
+            self.size = ""
+            self.price = 0.0
+        else:
+            print("Please enter a valid Pizza type.")
 
     def add_topping(self, topping_flag):
         if(topping_flag == 1):
@@ -18,12 +38,16 @@ class Pizza:
             self.toppings[5] = "bell peppers"
         elif(topping_flag == 6):
             self.toppings[6] = "jalepeno peppers"
+        elif(topping_flag == 0):
+            print("Toppings Added!")
         else:
             print("Please enter a valid topping option.")
 
     def remove_topping(self, topping_flag):
         if(self.toppings[topping_flag]):
             self.toppings.pop(topping_flag)
+        else:
+            print("Please enter a valid topping option.")
 
     def choose_dough(self, dough_flag):
         if(dough_flag == 1):
@@ -46,3 +70,28 @@ class Pizza:
             self.size = "Party Size"
         else:
             print("Please enter a valid size option.")
+
+    def calculate_price(self):
+        # Dough Prices
+        if(self.dough == "White"):
+            self.price += 3
+        elif(self.dough == "Whole Wheat"):
+            self.price += 3.50
+        elif(self.dough == "Cauliflower"):
+            self.price += 4
+
+        # Size Prices
+        if(self.size == "Small"):
+            self.price += 6
+        elif(self.size == "Medium"):
+            self.price += 8
+        elif(self.size == "Large"):
+            self.price += 10
+        elif(self.size == "Party Size"):
+            self.price += 15
+
+        # Toppings Prices
+        if(len(self.toppings) > 0):
+            self.price += (len(self.toppings) - 1) * 1
+
+        return
