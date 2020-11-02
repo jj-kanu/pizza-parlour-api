@@ -1,4 +1,4 @@
-class Shopping_Cart:
+class ShoppingCart:
 
     def __init__(self, order_number):
         self.drinks = {}
