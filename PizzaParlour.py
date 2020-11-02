@@ -5,19 +5,17 @@ app = Flask("Assignment 2")
 
 pizza_id = 0
 
-
 @app.route('/pizza')
 def welcome_pizza():
     return 'Welcome to Pizza Planet!'
-
 
 # PIZZA FUNCTIONS
 def choose_pizza(type_flag):
     """
         Chosen pizza will be added to cart object.
     """
-    temp_pizza = Pizza(type_flag, pizza_id)
     global pizza_id
+    temp_pizza = Pizza(type_flag, pizza_id)
     pizza_id += 1
     print("Pizza Sizes: 1 = Small, 2 = Medium, 3 = Large, 4 = Party")
     while(temp_pizza.size == ""):
