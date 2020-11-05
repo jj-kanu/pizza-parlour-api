@@ -89,6 +89,13 @@ def choose_pizza(type_flag):
     return
 
 
+def parse_menu(order_item):
+    return_string = ""
+    if order_item.lower() == "small pepperoni":
+        return_string = "A small pepperoni is $5"
+    return return_string
+
+
 def create_pizza(custom_pizza):
     # Custom Dough
     print("Pizza Dough: 1 = White, 2 = Whole Wheat, 3 = Cauliflower")
