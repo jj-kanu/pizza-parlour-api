@@ -51,7 +51,7 @@ def accept_input(main_menu_input):
             topping_option = -1
             while topping_option != 0:
                 topping_option = input("What toppings do you want to add?")
-                if topping_option in range(1: 8):
+                if topping_option in range(1, 8):
                     list_of_toppings += str(topping_option) + ","
                     print("Topping added.")
                 else:
