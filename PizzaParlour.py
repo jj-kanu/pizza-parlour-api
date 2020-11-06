@@ -70,6 +70,14 @@ def clear_cart():
     curr_cart.clear_cart()
     return "Cart Cleared"
 
+
+@app.route('/is-pizza-in-cart/<id>', methods=['GET', 'POST'])
+def is_pizza_in_cart(id):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == id:
+            return True
+    return False
+
 # Menu Functions
 
 
@@ -114,32 +122,29 @@ def parse_menu(order_item):
 
 
 # PIZZA FUNCTIONS
-@app.route('/choose-pizza/<type_flag>,<size>', methods=['GET', 'POST'])
-def choose_pizza(type_flag, size):
+@app.route('/choose-pizza/<type_flag>,<size_option>', methods=['GET', 'POST'])
+def choose_pizza(type_flag, size_option):
     global pizza_id
     temp_pizza = Pizza(type_flag, pizza_id)
     pizza_id += 1
-    temp_pizza.choose_size(size)
+    temp_pizza.choose_size(size_option)
     add_pizza_to_cart(temp_pizza)
     return "Pizza added to cart."
 
 
-def create_pizza(custom_pizza):
-    # Custom Dough
-    print("Pizza Dough: 1 = White, 2 = Whole Wheat, 3 = Cauliflower")
-    while custom_pizza.dough == "":
-        dough_flag = input("What dough would you like?")
-        custom_pizza.choose_dough(dough_flag)
+@app.route('/create-pizza/<dough_option>,<list_of_toppings>,<size_option>', methods=['GET', 'POST'])
+def create_pizza(dough_option, toppings_option, size_option):
+    global pizza_id
+    custom_pizza = Pizza(4, pizza_id)
+    pizza_id += 1
+    custom_pizza.choose_dough(dough_option)
 
-    # Custom Toppings
-    print("Pizza Toppings: 1 = pepperoni, 2 = bacon, 3 = pineapple, 4 = chicken,\n")
-    print("5 = bell peppers, 6 = jalepeno peppers\n Enter 0 to finish topping selection.")
-    topping_flag = -1
-    while topping_flag != 0:
-        topping_flag = input("What toppings would you like?")
-        custom_pizza.add_topping(topping_flag)
+    for x in toppings_option.split(","):
+        custom_pizza.add_topping(int(x))
 
-    return custom_pizza
+    custom_pizza.choose_size(dough)
+    add_pizza_to_cart(custom_pizza)
+    return "Pizza added to cart."
 
 
 def edit_pizza_toppings(pizza):
