@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import request
 from Pizza import *
 from ShoppingCart import *
 
@@ -15,29 +16,52 @@ def welcome_pizza():
 
 
 # CART FUNCTIONS
+@app.route('/cart')
+def get_cart():
+    return curr_cart
+
+@app.route('/cart-string')
+def get_cart_string():
+    return curr_cart.view_cart()
+
+@app.route('/drinks-in-cart')
+def get_drinks_in_cart():
+    return curr_cart.view_drinks()
+
+@app.route('/valid-drinks')
+def get_drinks():
+    return curr_cart.view_drinks()
+
 def add_pizza_to_cart(pizza):
     curr_cart.add_pizza(pizza)
     return
-
 
 def remove_pizza_from_cart(pizza_id):
     curr_cart.remove_pizza(pizza_id)
     return
 
-
+@app.route('/add-drink/<drink>/<quantity>', methods=['GET', 'POST'])
 def add_drink_to_cart(drink, quantity):
-    curr_cart.add_drink(drink, quantity)
-    return
+    curr_cart.add_drink(drink, int(quantity))
+    if drink.lower() in curr_cart.view_drinks():
+        return "Drink added"
+    else:
+        return "Invalid drink. Try again."
 
-
+@app.route('/remove-drink/<drink>/<quantity>', methods=['GET', 'POST'])
 def remove_drink_from_cart(drink, quantity):
-    curr_cart.remove_drink(drink, quantity)
-    return
+    curr_cart.remove_drink(drink, int(quantity))
+    if curr_cart.drinks.get(drink.lower()):
+        return_string = "Drink removed"
+    else:
+        return_string = "Invalid drink. Try again."
+    return return_string
 
 
+@app.route('/clear-cart')
 def clear_cart():
     curr_cart.clear_cart()
-    return
+    return "Cart Cleared"
 
 
 def view_cart():
@@ -46,6 +70,7 @@ def view_cart():
 
 
 # PIZZA FUNCTIONS
+@app.route('/add-pizza/<type_flag>')
 def choose_pizza(type_flag):
     """
         Chosen pizza will be added to cart object.
@@ -62,6 +87,13 @@ def choose_pizza(type_flag):
 
     add_pizza_to_cart(temp_pizza)
     return
+
+
+def parse_menu(order_item):
+    return_string = ""
+    if order_item.lower() == "small pepperoni":
+        return_string = "A small pepperoni is $5"
+    return return_string
 
 
 def create_pizza(custom_pizza):
@@ -137,10 +169,11 @@ def checkout():
     while response != "y" or response != "n":
         response = input("Do you want to checkout now? y/n")
     if response == "y":
-        #We want to have them choose delivery method here
+        # We want to have them choose delivery method here
         return
     elif response == "n":
         return
+
 
 if __name__ == "__main__":
     app.run()

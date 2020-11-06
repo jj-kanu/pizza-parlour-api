@@ -7,32 +7,43 @@ class ShoppingCart:
         self.order_number = order_number
         self.valid_drinks = ["water", "coke", "nestea", "mountain dew", "canada dry"]
 
+    def view_drinks(self):
+        curr_string = "Drinks: "
+        for drinks in self.valid_drinks:
+            curr_string += drinks
+            curr_string += ', '
+        return curr_string
+
     def view_cart(self):
-        print("Drinks in cart: ")
+        curr_string = "Current Cart:\n"
+        curr_string += "------------------------------\n"
+        curr_string += "Drinks in cart: \n"
         for drinks in self.drinks:
-            print(drinks)
-            for quantity in self.drinks[drinks]:
-                print(quantity, ':', self.drinks[drinks][quantity])
+            curr_string += "* "
+            curr_string += drinks
+            curr_string += ':'
+            curr_string += str(self.drinks[drinks])
+            curr_string += "\n"
 
-        print("Pizzas in cart:")
+        curr_string += "\nPizzas in cart:"
         for pizza in self.pizzas:
-            print("Pizza Id: ")
-            print(pizza.id)
-            print("Pizza size: ")
-            print(pizza.size)
-            print("Pizza dough: ")
-            print(pizza.dough)
-            print("Pizza toppings: ")
-            print(pizza.toppings)
-            print("-----------------------------------")
+            curr_string += "\nPizza Id: "
+            curr_string += pizza.id
+            curr_string += "\nPizza size: "
+            curr_string += pizza.size
+            curr_string += "\nPizza dough: "
+            curr_string += pizza.dough
+            curr_string += "\nPizza toppings: "
+            curr_string += pizza.toppings
+            curr_string += "-----------------------------------"
 
-        print("Current subtotal is: " + str(self.total))
-        return
+        curr_string += "\nCurrent subtotal is: " + str(self.total)
+        return curr_string
 
     def add_drink(self, drink, quantity):
-        print("Drinks: Water, Coke, Nestea, Mountain Dew, Canada Dry")
         if drink.lower() in self.valid_drinks:
             self.drinks[drink.lower()] = self.drinks.get(drink.lower(),0) + quantity
+            self.total += (1.5 * quantity)
         else:
             print("Invalid drink option, try again.")
         return
@@ -42,8 +53,9 @@ class ShoppingCart:
         if drink.lower() in self.valid_drinks:
             if self.drinks.get(drink.lower(),0) - quantity >= 0 :
                 self.drinks[drink.lower()] = self.drinks.get(drink.lower(),0) - quantity
+                self.total -= (1.5 * quantity)
             else:
-                print("You are removing more drinks than you have. Try again.")
+                return_string = ("You are removing more drinks than you have. Try again.")
         else:
             print("Invalid drink option, try again.")
         return

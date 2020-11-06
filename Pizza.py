@@ -45,7 +45,7 @@ class Pizza:
             print("Please enter a valid topping option.")
 
     def remove_topping(self, topping_flag):
-        if(self.toppings[topping_flag]):
+        if(topping_flag in self.toppings):
             self.toppings.pop(topping_flag)
         else:
             print("Please enter a valid topping option.")
