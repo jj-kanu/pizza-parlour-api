@@ -14,6 +14,7 @@ def main_menu_prompt():
     return input("1 to add a pizza, 2 to add a drink, 3 to remove a drink, 4 to view cart, 5 to clear cart, 0 to exit: ")
 
 def accept_input(main_menu_input):
+    # Extract this out to helper functions
     if main_menu_input == "2":
         response = requests.get("http://127.0.0.1:5000/valid-drinks")
         print(response.text)
