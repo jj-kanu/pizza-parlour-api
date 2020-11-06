@@ -20,25 +20,31 @@ def welcome_pizza():
 def get_cart():
     return curr_cart
 
+
 @app.route('/cart-string')
 def get_cart_string():
     return curr_cart.view_cart()
+
 
 @app.route('/drinks-in-cart')
 def get_drinks_in_cart():
     return curr_cart.get_drinks()
 
+
 @app.route('/valid-drinks')
 def get_valid_drinks():
     return curr_cart.view_valid_drinks()
+
 
 def add_pizza_to_cart(pizza):
     curr_cart.add_pizza(pizza)
     return
 
+
 def remove_pizza_from_cart(pizza_id):
     curr_cart.remove_pizza(pizza_id)
     return
+
 
 @app.route('/add-drink/<drink>/<quantity>', methods=['GET', 'POST'])
 def add_drink_to_cart(drink, quantity):
@@ -47,6 +53,7 @@ def add_drink_to_cart(drink, quantity):
         return "Drink added"
     else:
         return "Invalid drink. Try again."
+
 
 @app.route('/remove-drink/<drink>/<quantity>', methods=['GET', 'POST'])
 def remove_drink_from_cart(drink, quantity):
@@ -63,32 +70,58 @@ def clear_cart():
     curr_cart.clear_cart()
     return "Cart Cleared"
 
+# Menu Functions
+
+
+@app.route('/view-menu')
+def view_menu():
+    menu = open("Menu.txt", "r")
+    return menu.readlines
+
+
+@app.route('/parse-menu/<order_item>', methods=['GET', 'POST'])
+def parse_menu(order_item):
+    toppings = ["pepperoni", "bacon", "pineapple", "pineapples", "chicken",
+                "bell peppers", "jalapeno peppers", "bell pepper", "jalapeno pepper"]
+    dough = ["white", "whole wheat", "cauliflower"]
+    return_string = ""
+    # Pizza Options
+    if order_item.lower() == "pepperoni pizza":
+        return_string = "One of the Kanuli specials. Made on White Bread Dough \n \
+            (S: 9/ M: 11/ L: 13/ P: 18)"
+    elif order_item.lower() == "cheese pizza":
+        return_string = "One of the Kanuli specials. Made on White Bread Dough \n \
+            (S: 9/ M: 11/ L: 13/ P: 18)"
+    elif order_item.lower() == "meat lover's pizza" or "meat lovers pizza":
+        return_string = "One of the Kanuli specials. Made on White Bread Dough \n \
+            (S: 11/ M: 13/ L: 15/ P: 20)"
+    elif order_item.lower() == "pizza":
+        return_string = "Yup, that's what we serve. You can make your own or get a special.\n \
+                Prices may vary based on size, dough, and number of toppings."
+    # Dough
+    elif order_item.lower() in dough:
+        return_string = "This item is a possible dough base for a pizza.\
+            (White: 3/ WW: 3.50/ Cauliflower: 4)"
+    # Topping Options
+    elif order_item.lower() == "cheese":
+        return_string = "Cheese is automatically applied to all pizzas. It's on the house."
+    elif order_item.lower() in toppings:
+        return_string = "This item is a possible topping for a pizza.\
+            One topping is on the house, additional toppings are $1 each."
+    else:
+        return_string = "This item isn't recognized. Perhaps view full menu to check?"
+    return return_string
+
 
 # PIZZA FUNCTIONS
-@app.route('/add-pizza/<type_flag>')
-def choose_pizza(type_flag):
-    """
-        Chosen pizza will be added to cart object.
-    """
+@app.route('/choose-pizza/<type_flag>,<size>', methods=['GET', 'POST'])
+def choose_pizza(type_flag, size):
     global pizza_id
     temp_pizza = Pizza(type_flag, pizza_id)
     pizza_id += 1
-    print("Pizza Sizes: 1 = Small, 2 = Medium, 3 = Large, 4 = Party")
-    while temp_pizza.size == "":
-        tmp_size = input("What size Pizza would you like?")
-        temp_pizza.choose_size(tmp_size)
-    if type_flag == 4:
-        temp_pizza = create_pizza(temp_pizza)
-
+    temp_pizza.choose_size(size)
     add_pizza_to_cart(temp_pizza)
-    return
-
-
-def parse_menu(order_item):
-    return_string = ""
-    if order_item.lower() == "small pepperoni":
-        return_string = "A small pepperoni is $5"
-    return return_string
+    return "Pizza added to cart."
 
 
 def create_pizza(custom_pizza):

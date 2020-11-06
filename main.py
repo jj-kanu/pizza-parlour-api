@@ -10,10 +10,64 @@ def main():
         main_menu_input = main_menu_prompt()
     return
 
+
 def main_menu_prompt():
-    return input("1 to add a pizza, 2 to add a drink, 3 to remove a drink, 4 to view cart, 5 to clear cart, 0 to exit: ")
+    return input("1 to add a pizza, 2 to add a drink, 3 to remove a drink, 4 to view cart, \
+        5 to clear cart, 6 to view menu, 7 to look up menu item. 0 to exit: ")
+
 
 def accept_input(main_menu_input):
+    if main_menu_input == "1":
+        print(
+            "Enter 1 for Pepperoni, 2 for Cheese, 3 for Meat Lover's, 4 for Custom Pizza.")
+        pizza_option = input("What type of pizza would you like?")
+        while pizza_option not in range(1, 5):
+            print("Invalid pizza type. Please enter a valid pizza type.")
+            pizza_option = input("What type of pizza would you like?")
+        if pizza_option in range(1, 4):
+            print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
+            size_option = input("What size pizza do you want?")
+            while size_option not in range(1, 5):
+                print("Invalid size. Please enter a valid pizza size flag.")
+                size_option = input("What size pizza do you want?")
+            url_string = "http://127.0.0.1:5000/choose-pizza/" + \
+                pizza_option + "/" + size_option
+        elif(pizza_option == 4):
+            # Dough
+            print("Enter 1 for White, 2 for Whole Wheat, 3 for Cauliflower")
+            dough_option = input("What type of dough would you like?")
+            while dough_option not in range(1, 4):
+                print("Invalid dough type. Please enter a valid dough type flag.")
+                dough_option = input("What type of dough would you like?")
+            # Toppings
+            print("Enter 1 for White, 2 for Whole Wheat, 3 for Cauliflower")
+            print("Enter 0 to Stop Adding Toppings")
+            topping_option = input
+            # Size
+            print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
+            size_option = input("What size pizza do you want?")
+            while size_option not in range(1, 5):
+                print("Invalid size. Please enter a valid pizza size flag.")
+                size_option = input("What size pizza do you want?")
+
+            url_string = "http://127.0.0.1:5000/create-pizza/" + \
+                drink_option + "/" + drink_quantity
+        response = requests.post(url_string)
+        print(response.text)
+
+    # Edit Pizza
+    if main_menu_input == "9":
+        response = requests.get("http://127.0.0.1:5000/cart-string")
+        print(response.text)
+
+        pizza_id = input("What is the id of the pizza you want to edit?")
+        url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
+        response = requests.post(url_string)
+        if not response:
+            print("No such Pizza in cart.")
+        else:
+            hkj
+
     # Extract this out to helper functions
     if main_menu_input == "2":
         url_string = client_add_drinks()
@@ -27,11 +81,23 @@ def accept_input(main_menu_input):
         response = requests.post(url_string)
         print(response.text)
 
-    if main_menu_input == "4" :
+    if main_menu_input == "4":
         client_view_cart()
 
     if main_menu_input == "5":
         client_clear_cart()
+
+    if main_menu_input == "6":
+        response = requests.get("http://127.0.0.1:5000/view-menu")
+        for line in response:
+            print(line)
+
+    if main_menu_input == "7":
+        order_item = input("What item would you like to look up?")
+        url_string = "http://127.0.0.1:5000/parse-menu/" + order_item
+        response = requests.post(url_string)
+        print(response.text)
+
     return main_menu_input
 
 
@@ -48,7 +114,8 @@ def client_view_cart():
 def client_remove_drinks():
     drink_option = input("What drink would you like to remove? ")
     drink_quantity = input("How many? ")
-    url_string = "http://127.0.0.1:5000/remove-drink/" + drink_option + "/" + drink_quantity
+    url_string = "http://127.0.0.1:5000/remove-drink/" + \
+        drink_option + "/" + drink_quantity
     return url_string
 
 
@@ -57,7 +124,8 @@ def client_add_drinks():
     print(response.text)
     drink_option = input("What drink would you like? ")
     drink_quantity = input("How many? ")
-    url_string = "http://127.0.0.1:5000/add-drink/" + drink_option + "/" + drink_quantity
+    url_string = "http://127.0.0.1:5000/add-drink/" + \
+        drink_option + "/" + drink_quantity
     return url_string
 
 
