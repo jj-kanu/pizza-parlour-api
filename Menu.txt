@@ -1,0 +1,25 @@
+  _  __                 _ _ _       _____ _               
+ | |/ /                | (_| )     |  __ (_)              
+ | ' / __ _ _ __  _   _| |_|/ ___  | |__) | __________ _  
+ |  < / _` | '_ \| | | | | | / __| |  ___/ |_  /_  / _` | 
+ | . \ (_| | | | | |_| | | | \__ \ | |   | |/ / / / (_| | 
+ |_|\_\__,_|_| |_|\__,_|_|_| |___/ |_|   |_/___/___\__,_| 
+  ______ ______ ______ ______ ______ ______ ______ ______ 
+ |______|______|______|______|______|______|______|______|
+                                                          
+KANULI'S SPECIALS: 
+~Pepperoni: White Bread Dough; Pepperoni. .............................(S: 9/ M: 11/ L: 13/ P: 18)
+~Cheese: White Bread Dough; No Additional Toppings. ...................(S: 9/ M: 11/ L: 13/ P: 18)
+~Meat Lover's: White Bread Dough; Pepperoni, Bacon, Chicken. ..........(S: 11/ M: 13/ L: 15/ P: 20)
+
+MAKE YOUR OWN PIZZA: (S: 6/ M: 8/ L: 10/ P: 15)
+~Dough Types: White (+3), Whole Wheat (+3.50), Cauliflower (+4)
+~Toppings: Pepperoni, Bacon, Chicken, Pineapples, Bell Peppers, Jalapeno Peppers
+	*First topping on the house, $1 for each additional topping.
+
+DRINKS: (1.5 per drink)   
+~Water (500ml)
+~Coke (330ml)
+~Nestea (330ml)
+~Mountain Dew (330ml)
+~Canada Dry (330ml)                           
