@@ -26,11 +26,11 @@ def get_cart_string():
 
 @app.route('/drinks-in-cart')
 def get_drinks_in_cart():
-    return curr_cart.view_drinks()
+    return curr_cart.get_drinks()
 
 @app.route('/valid-drinks')
-def get_drinks():
-    return curr_cart.view_drinks()
+def get_valid_drinks():
+    return curr_cart.view_valid_drinks()
 
 def add_pizza_to_cart(pizza):
     curr_cart.add_pizza(pizza)
@@ -43,7 +43,7 @@ def remove_pizza_from_cart(pizza_id):
 @app.route('/add-drink/<drink>/<quantity>', methods=['GET', 'POST'])
 def add_drink_to_cart(drink, quantity):
     curr_cart.add_drink(drink, int(quantity))
-    if drink.lower() in curr_cart.view_drinks():
+    if drink.lower() in curr_cart.view_valid_drinks():
         return "Drink added"
     else:
         return "Invalid drink. Try again."
@@ -62,11 +62,6 @@ def remove_drink_from_cart(drink, quantity):
 def clear_cart():
     curr_cart.clear_cart()
     return "Cart Cleared"
-
-
-def view_cart():
-    curr_cart.view_cart()
-    return
 
 
 # PIZZA FUNCTIONS

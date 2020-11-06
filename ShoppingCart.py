@@ -7,11 +7,14 @@ class ShoppingCart:
         self.order_number = order_number
         self.valid_drinks = ["water", "coke", "nestea", "mountain dew", "canada dry"]
 
-    def view_drinks(self):
+    def view_valid_drinks(self):
         curr_string = "Drinks: "
-        for drinks in self.valid_drinks:
-            curr_string += drinks
-            curr_string += ', '
+        i = 0
+        while i < len(self.valid_drinks):
+            curr_string += self.valid_drinks[i]
+            if i != len(self.valid_drinks) - 1:
+                curr_string += ', '
+            i += 1
         return curr_string
 
     def view_cart(self):
@@ -28,13 +31,13 @@ class ShoppingCart:
         curr_string += "\nPizzas in cart:"
         for pizza in self.pizzas:
             curr_string += "\nPizza Id: "
-            curr_string += pizza.id
+            curr_string += str(pizza.id)
             curr_string += "\nPizza size: "
             curr_string += pizza.size
             curr_string += "\nPizza dough: "
             curr_string += pizza.dough
             curr_string += "\nPizza toppings: "
-            curr_string += pizza.toppings
+            curr_string += str(pizza.toppings)
             curr_string += "-----------------------------------"
 
         curr_string += "\nCurrent subtotal is: " + str(self.total)
@@ -80,3 +83,6 @@ class ShoppingCart:
         self.total = 0.0
         print("Cart cleared!")
         return
+
+    def get_drinks(self):
+        return self.drinks
