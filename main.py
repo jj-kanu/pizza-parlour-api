@@ -21,14 +21,14 @@ def accept_input(main_menu_input):
         print(
             "Enter 1 for Pepperoni, 2 for Cheese, 3 for Meat Lover's, 4 for Custom Pizza.")
         pizza_option = input("What type of pizza would you like?")
-        while pizza_option not in range(1, 5):
+        while int(pizza_option) not in range(1, 5):
             print("Invalid pizza type. Please enter a valid pizza type.")
             pizza_option = input("What type of pizza would you like?")
         # PREMADE PIZZAS
-        if pizza_option in range(1, 4):
+        if int(pizza_option) in range(1, 4):
             print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
             size_option = input("What size pizza do you want?")
-            while size_option not in range(1, 5):
+            while int(size_option) not in range(1, 5):
                 print("Invalid size. Please enter a valid pizza size flag.")
                 size_option = input("What size pizza do you want?")
             url_string = "http://127.0.0.1:5000/choose-pizza/" + \

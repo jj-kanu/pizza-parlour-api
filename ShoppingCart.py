@@ -30,6 +30,7 @@ class ShoppingCart:
 
         curr_string += "\nPizzas in cart:"
         for pizza in self.pizzas:
+            topping_array = []
             curr_string += "\nPizza Id: "
             curr_string += str(pizza.id)
             curr_string += "\nPizza size: "
@@ -37,8 +38,10 @@ class ShoppingCart:
             curr_string += "\nPizza dough: "
             curr_string += pizza.dough
             curr_string += "\nPizza toppings: "
-            curr_string += str(pizza.toppings)
-            curr_string += "-----------------------------------"
+            for topping in pizza.toppings:
+                topping_array.append(pizza.toppings[topping])
+            curr_string += str(topping_array)
+            curr_string += "\n-----------------------------------"
 
         curr_string += "\nCurrent subtotal is: " + str(self.total)
         return curr_string

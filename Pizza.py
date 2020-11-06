@@ -1,6 +1,10 @@
 class Pizza:
     def __init__(self, type, id):
         self.id = id
+        self.toppings={}
+        self.size = ""
+        self.price = 0.0
+        self.dough = ""
         if(type == 1):
             self.dough = "White"
             self.toppings = {1: "pepperoni"}

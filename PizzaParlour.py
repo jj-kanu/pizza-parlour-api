@@ -123,17 +123,17 @@ def parse_menu(order_item):
 
 
 # PIZZA FUNCTIONS
-@app.route('/choose-pizza/<type_flag>,<size_option>', methods=['GET', 'POST'])
+@app.route('/choose-pizza/<type_flag>/<size_option>', methods=['GET', 'POST'])
 def choose_pizza(type_flag, size_option):
     global pizza_id
-    temp_pizza = Pizza(type_flag, pizza_id)
+    temp_pizza = Pizza(int(type_flag), pizza_id)
     pizza_id += 1
-    temp_pizza.choose_size(size_option)
+    temp_pizza.choose_size(int(size_option))
     add_pizza_to_cart(temp_pizza)
     return "Pizza added to cart."
 
 
-@app.route('/create-pizza/<dough_option>,<list_of_toppings>,<size_option>', methods=['GET', 'POST'])
+@app.route('/create-pizza/<dough_option>/<toppings_option>/<size_option>', methods=['GET', 'POST'])
 def create_pizza(dough_option, toppings_option, size_option):
     global pizza_id
     custom_pizza = Pizza(4, pizza_id)
@@ -143,7 +143,7 @@ def create_pizza(dough_option, toppings_option, size_option):
     for x in toppings_option.split(","):
         custom_pizza.add_topping(int(x))
 
-    custom_pizza.choose_size(dough)
+    custom_pizza.choose_size(size_option)
     add_pizza_to_cart(custom_pizza)
     return "Pizza added to cart."
 
