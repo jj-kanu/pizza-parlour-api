@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from Pizza import *
 from ShoppingCart import *
+import json
 
 app = Flask("Assignment 2")
 
@@ -206,6 +207,13 @@ def checkout():
         return
     elif response == "n":
         return
+
+def ubereats_json_generation(address, order_details):
+    order = {"Order address": address,
+         "Order details": order_details,
+         "Order number": cart_id}
+    json_string = json.dumps(order)
+    return json_string
 
 
 if __name__ == "__main__":
