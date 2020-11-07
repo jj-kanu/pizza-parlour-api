@@ -106,7 +106,7 @@ def parse_menu(order_item):
     elif order_item.lower() == "cheese pizza":
         return_string = "One of the Kanuli specials. Made on White Bread Dough \n \
             (S: 9/ M: 11/ L: 13/ P: 18)"
-    elif order_item.lower() == "meat lover's pizza" or "meat lovers pizza":
+    elif order_item.lower() == "meat lover's pizza" or order_item.lower == "meat lovers pizza":
         return_string = "One of the Kanuli specials. Made on White Bread Dough \n \
             (S: 11/ M: 13/ L: 15/ P: 20)"
     elif order_item.lower() == "pizza":
@@ -159,88 +159,61 @@ def create_pizza(dough_option, toppings_option, size_option):
 
 @app.route('/change-pizza-dough/<pizza_id>/<dough_option>', methods=['GET', 'POST'])
 def change_pizza_dough(pizza_id, dough_option):
+    previous_price = 0.0
+    curr_price = 0.0
     for pizza in curr_cart.pizzas:
         if pizza.id == int(pizza_id):
+            previous_price = pizza.price
             pizza.choose_dough(int(dough_option))
             pizza.calculate_price()
+            curr_price = pizza.price
+            curr_cart.update_price(previous_price, curr_price)
     return "Dough has been changed."
 
 
 @app.route('/change-pizza-size/<pizza_id>/<size_option>', methods=['GET', 'POST'])
 def change_pizza_size(pizza_id, size_option):
+    previous_price = 0.0
+    curr_price = 0.0
     for pizza in curr_cart.pizzas:
         if pizza.id == int(pizza_id):
+            previous_price = pizza.price
             pizza.choose_size(int(size_option))
             pizza.calculate_price()
+            curr_price = pizza.price
+            curr_cart.update_price(previous_price, curr_price)
     return "Size has been changed."
 
 
 @app.route('/add-topping-to-pizza/<pizza_id>/<toppings_option>', methods=['GET', 'POST'])
 def add_topping_to_pizza(pizza_id, toppings_option):
+    previous_price = 0.0
+    curr_price = 0.0
     for pizza in curr_cart.pizzas:
         if pizza.id == int(pizza_id):
             for x in toppings_option.split(","):
+                previous_price = pizza.price
                 pizza.add_topping(int(x))
                 pizza.calculate_price()
+                curr_price = pizza.price
+                curr_cart.update_price(previous_price, curr_price)
     return "These toppings will be added to Pizza."
 
 
 @app.route('/remove-topping-from-pizza/<pizza_id>/<toppings_option>', methods=['GET', 'POST'])
 def remove_topping_from_pizza(pizza_id, toppings_option):
+    previous_price = 0.0
+    curr_price = 0.0
     for pizza in curr_cart.pizzas:
         if pizza.id == int(pizza_id):
             for x in toppings_option.split(","):
+                previous_price = pizza.price
                 pizza.remove_topping(int(x))
                 pizza.calculate_price()
+                curr_price = pizza.price
+                curr_cart.update_price(previous_price, curr_price)
     return "These toppings will not be on your Pizza."
 
-
-"""
-def edit_pizza_toppings(pizza):
-    # Assuming there is a pizza already in cart, that they want to edit.
-    edit_flag = -1
-    while edit_flag != 0:
-        print("Edit Pizza: 1 = Change Dough, 2 = Add Toppings, 3 = Remove Toppings, 4 = Change Size\n")
-        edit_flag = input("What would you like to change about your pizza?")
-        # Change Dough
-        if edit_flag == 1:
-            print("Pizza Dough: 1 = White, 2 = Whole Wheat, 3 = Cauliflower")
-            pizza.dough = ""
-            while pizza.dough == "":
-                dough_flag = input("What dough would you like?")
-                pizza.choose_dough(dough_flag)
-
-        # EDITING TOPPINGS
-        # Add Toppings
-        if edit_flag == 2:
-            print(
-                "Pizza Toppings: 1 = pepperoni, 2 = bacon, 3 = pineapple, 4 = chicken,\n")
-            print(
-                "5 = bell peppers, 6 = jalepeno peppers\nEnter 0 to finish topping selection.")
-            topping_flag = -1
-            while topping_flag != 0:
-                topping_flag = input("What toppings would you like to add?")
-                pizza.add_topping(topping_flag)
-
-        # Remove Toppings
-        if edit_flag == 3:
-            print(pizza.toppings)
-            print("Enter the number of the topping you would like to remove.\n Enter 0 to complete topping removal.")
-            topping_flag = -1
-            while topping_flag != 0:
-                topping_flag = input("What toppings would you like to remove?")
-                pizza.remove_topping(topping_flag)
-                print(pizza.toppings)
-
-        # Change Size
-        if edit_flag == 4:
-            print("Pizza Sizes: 1 = Small, 2 = Medium, 3 = Large, 4 = Party")
-            pizza.size = ""
-            while pizza.size == "":
-                size_flag = input("What size pizza would you like?")
-                pizza.choose_size(size_flag)
-    return
-"""
 
 
 def checkout():

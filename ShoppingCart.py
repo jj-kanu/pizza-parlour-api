@@ -80,6 +80,11 @@ class ShoppingCart:
                 print("Invalid pizza removal.")
         return
 
+    def update_price(self, old_price, new_price):
+        self.total -= old_price
+        self.total += new_price
+
+
     def clear_cart(self):
         self.drinks = {}
         self.pizzas = []
