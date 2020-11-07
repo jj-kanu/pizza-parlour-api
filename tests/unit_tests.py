@@ -55,9 +55,11 @@ class Test(TestCase):
     @patch ('builtins.input', return_value = 1)
     def test_add_pizza_to_cart(self, input):
         expected_pizza = Pizza(1,0)
+        expected_pizza.size = "Medium"
         cart = get_cart()
-        choose_pizza(input.return_value)
+        choose_pizza(input.return_value, 2)
         assert cart.pizzas[0].id == expected_pizza.id
+        assert cart.pizzas[0].size == expected_pizza.size
 
     @patch('builtins.input', return_value=0)
     def test_remove_pizza_from_cart(self, input):
@@ -79,7 +81,7 @@ class Test(TestCase):
     @patch ('builtins.input', return_value = 1)
     def test_view_cart(self, input):
         cart = get_cart()
-        choose_pizza(input.return_value)
+        choose_pizza(input.return_value, 2)
         add_drink_to_cart("water", 1)
         add_drink_to_cart("coke", 2)
         self.assertEqual(get_cart_string(), cart.view_cart())
@@ -90,6 +92,17 @@ class Test(TestCase):
         assert cart.pizzas == []
         assert cart.drinks == {}
         assert cart.total == 0.0
+
+    def test_update_cart_price(self):
+        cart = get_cart()
+        clear_cart()
+        custom_pizza = Pizza(3,2)
+        custom_pizza.size = "Small"
+        custom_pizza.calculate_price()
+        cart.add_pizza(custom_pizza)
+        add_topping_to_pizza(2,"3")
+        custom_pizza.calculate_price()
+        assert cart.total == 12
 
     def test_get_drinks_in_cart(self):
         cart = get_cart()
