@@ -13,7 +13,7 @@ def main():
 
 def main_menu_prompt():
     return input("1 to add a pizza, 2 to add a drink, 3 to remove a drink, 4 to view cart, \
-        5 to clear cart, 6 to view menu, 7 to look up menu item. 0 to exit: ")
+        5 to cancel order, 6 to view menu, 7 to look up menu item. 0 to exit: ")
 
 
 def accept_input(main_menu_input):
