@@ -1,7 +1,7 @@
 class Pizza:
     def __init__(self, type, id):
         self.id = id
-        self.toppings={}
+        self.toppings = {}
         self.size = ""
         self.price = 0.0
         self.dough = ""
@@ -78,6 +78,7 @@ class Pizza:
 
     def calculate_price(self):
         # Dough Prices
+        self.price = 0
         if(self.dough == "White"):
             self.price += 3
         elif(self.dough == "Whole Wheat"):

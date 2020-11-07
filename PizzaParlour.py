@@ -154,7 +154,48 @@ def create_pizza(dough_option, toppings_option, size_option):
     add_pizza_to_cart(custom_pizza)
     return "Pizza added to cart."
 
+# Edit Pizza Functions
 
+
+@app.route('/change-pizza-dough/<pizza_id>/<dough_option>', methods=['GET', 'POST'])
+def change_pizza_dough(pizza_id, dough_option):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            pizza.choose_dough(int(dough_option))
+            pizza.calculate_price()
+    return "Dough has been changed."
+
+
+@app.route('/change-pizza-size/<pizza_id>/<size_option>', methods=['GET', 'POST'])
+def change_pizza_size(pizza_id, size_option):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            pizza.choose_size(int(size_option))
+            pizza.calculate_price()
+    return "Size has been changed."
+
+
+@app.route('/add-topping-to-pizza/<pizza_id>/<toppings_option>', methods=['GET', 'POST'])
+def add_topping_to_pizza(pizza_id, toppings_option):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            for x in toppings_option.split(","):
+                pizza.add_topping(int(x))
+                pizza.calculate_price()
+    return "These toppings will be added to Pizza."
+
+
+@app.route('/remove-topping-from-pizza/<pizza_id>/<toppings_option>', methods=['GET', 'POST'])
+def remove_topping_from_pizza(pizza_id, toppings_option):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            for x in toppings_option.split(","):
+                pizza.remove_topping(int(x))
+                pizza.calculate_price()
+    return "These toppings will not be on your Pizza."
+
+
+"""
 def edit_pizza_toppings(pizza):
     # Assuming there is a pizza already in cart, that they want to edit.
     edit_flag = -1
@@ -199,6 +240,7 @@ def edit_pizza_toppings(pizza):
                 size_flag = input("What size pizza would you like?")
                 pizza.choose_size(size_flag)
     return
+"""
 
 
 def checkout():
