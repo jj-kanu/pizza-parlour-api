@@ -85,7 +85,11 @@ def is_pizza_in_cart(id):
 @app.route('/view-menu')
 def view_menu():
     menu = open("Menu.txt", "r")
-    return menu.readlines
+    temp = menu.readlines()
+    returning_menu = ""
+    for line in temp:
+        returning_menu += line
+    return returning_menu
 
 
 @app.route('/parse-menu/<order_item>', methods=['GET', 'POST'])
@@ -129,6 +133,7 @@ def choose_pizza(type_flag, size_option):
     temp_pizza = Pizza(int(type_flag), pizza_id)
     pizza_id += 1
     temp_pizza.choose_size(int(size_option))
+    temp_pizza.calculate_price()
     add_pizza_to_cart(temp_pizza)
     return "Pizza added to cart."
 
@@ -138,12 +143,13 @@ def create_pizza(dough_option, toppings_option, size_option):
     global pizza_id
     custom_pizza = Pizza(4, pizza_id)
     pizza_id += 1
-    custom_pizza.choose_dough(dough_option)
+    custom_pizza.choose_dough(int(dough_option))
 
     for x in toppings_option.split(","):
         custom_pizza.add_topping(int(x))
 
-    custom_pizza.choose_size(size_option)
+    custom_pizza.choose_size(int(size_option))
+    custom_pizza.calculate_price()
     add_pizza_to_cart(custom_pizza)
     return "Pizza added to cart."
 
@@ -208,10 +214,11 @@ def checkout():
     elif response == "n":
         return
 
+
 def ubereats_json_generation(address, order_details):
     order = {"Order address": address,
-         "Order details": order_details,
-         "Order number": cart_id}
+             "Order details": order_details,
+             "Order number": cart_id}
     json_string = json.dumps(order)
     return json_string
 

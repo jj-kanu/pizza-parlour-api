@@ -20,48 +20,51 @@ def accept_input(main_menu_input):
     if main_menu_input == "1":
         print(
             "Enter 1 for Pepperoni, 2 for Cheese, 3 for Meat Lover's, 4 for Custom Pizza.")
-        pizza_option = input("What type of pizza would you like?")
+        pizza_option = input("What type of pizza would you like? ")
         while int(pizza_option) not in range(1, 5):
             print("Invalid pizza type. Please enter a valid pizza type.")
-            pizza_option = input("What type of pizza would you like?")
+            pizza_option = input("What type of pizza would you like? ")
         # PREMADE PIZZAS
         if int(pizza_option) in range(1, 4):
             print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
             size_option = input("What size pizza do you want?")
             while int(size_option) not in range(1, 5):
                 print("Invalid size. Please enter a valid pizza size flag.")
-                size_option = input("What size pizza do you want?")
+                size_option = input("What size pizza do you want? ")
             url_string = "http://127.0.0.1:5000/choose-pizza/" + \
                 pizza_option + "/" + size_option
             response = requests.post(url_string)
             print("Pizza added to cart.")
         # CUSTOM PIZZAS
-        elif(pizza_option == 4):
+        elif int(pizza_option) == 4:
             # Dough
             print("Enter 1 for White, 2 for Whole Wheat, 3 for Cauliflower")
-            dough_option = input("What type of dough would you like?")
-            while dough_option not in range(1, 4):
+            dough_option = input("What type of dough would you like? ")
+            while int(dough_option) not in range(1, 4):
                 print("Invalid dough type. Please enter a valid dough type flag.")
-                dough_option = input("What type of dough would you like?")
+                dough_option = input("What type of dough would you like? ")
             # Toppings
-            print("Enter Topping Number: 1: pepperoni, 2:bacon, 3:pineapple, 4:pineapples, 5:chicken,\n \
-                6: bell peppers, 7: jalapeno peppers")
+            print("Enter Topping Number: 1: pepperoni, 2:bacon, 3:pineapple, 4:chicken,\n \
+                5: bell peppers, 6: jalapeno peppers")
             print("Enter 0 to Stop Adding Toppings")
             list_of_toppings = ""
             topping_option = -1
-            while topping_option != 0:
-                topping_option = input("What toppings do you want to add?")
-                if topping_option in range(1, 8):
+            while int(topping_option) != 0:
+                topping_option = input("What toppings do you want to add? ")
+                if int(topping_option) in range(1, 7):
                     list_of_toppings += str(topping_option) + ","
                     print("Topping added.")
+                elif int(topping_option) == 0:
+                    list_of_toppings = list_of_toppings[:-1]
+                    print("Nice choice!")
                 else:
                     print("Please enter a topping number or press 0 to stop.")
             # Size
             print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
-            size_option = input("What size pizza do you want?")
-            while size_option not in range(1, 5):
+            size_option = input("What size pizza do you want? ")
+            while int(size_option) not in range(1, 5):
                 print("Invalid size. Please enter a valid pizza size flag.")
-                size_option = input("What size pizza do you want?")
+                size_option = input("What size pizza do you want? ")
 
             url_string = "http://127.0.0.1:5000/create-pizza/" + \
                 dough_option + "/" + list_of_toppings + "/" + size_option
@@ -73,7 +76,7 @@ def accept_input(main_menu_input):
         response = requests.get("http://127.0.0.1:5000/cart-string")
         print(response.text)
 
-        pizza_id = input("What is the id of the pizza you want to edit?")
+        pizza_id = input("What is the id of the pizza you want to edit? ")
         url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
         response = requests.post(url_string)
         if not response:
@@ -100,8 +103,7 @@ def accept_input(main_menu_input):
 
     if main_menu_input == "6":
         response = requests.get("http://127.0.0.1:5000/view-menu")
-        for line in response:
-            print(line)
+        print(response.text + "\n")
 
     if main_menu_input == "7":
         order_item = input("What item would you like to look up?")
