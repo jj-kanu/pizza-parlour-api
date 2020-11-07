@@ -42,8 +42,9 @@ def add_pizza_to_cart(pizza):
     return
 
 
+@app.route('/remove-pizza/<pizza_id>', methods=['GET', 'POST'])
 def remove_pizza_from_cart(pizza_id):
-    curr_cart.remove_pizza(pizza_id)
+    curr_cart.remove_pizza(int(pizza_id))
     return
 
 
@@ -75,9 +76,9 @@ def clear_cart():
 @app.route('/is-pizza-in-cart/<id>', methods=['GET', 'POST'])
 def is_pizza_in_cart(id):
     for pizza in curr_cart.pizzas:
-        if pizza.id == id:
-            return True
-    return False
+        if pizza.id == int(id):
+            return ""
+    return "No such Pizza in cart."
 
 # Menu Functions
 

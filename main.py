@@ -71,16 +71,33 @@ def accept_input(main_menu_input):
             response = requests.post(url_string)
             print(response.text)
 
+    # Remove Pizza
+    if main_menu_input == "8":
+        client_view_cart()
+
+        pizza_id = input("What is the id of the pizza you want to remove? ")
+        url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
+        response = requests.post(url_string)
+        # Checks if Pizza is in cart
+        if response.text == "":
+            url_string = "http://127.0.0.1:5000/remove-pizza/" + pizza_id
+            requests.post(url_string)
+            print("Pizza removed from cart.")
+        else:
+            print(response.text)
+
     # Edit Pizza
     if main_menu_input == "9":
-        response = requests.get("http://127.0.0.1:5000/cart-string")
-        print(response.text)
+        client_view_cart()
 
         pizza_id = input("What is the id of the pizza you want to edit? ")
         url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
         response = requests.post(url_string)
-        if not response:
-            print("No such Pizza in cart.")
+        # Checks if Pizza is in cart
+        if response.text == "":
+            print("Wokrs")
+        else:
+            print(response.text)
 
     # Extract this out to helper functions
     if main_menu_input == "2":
