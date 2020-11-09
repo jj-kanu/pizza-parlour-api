@@ -5,7 +5,8 @@ class ShoppingCart:
         self.pizzas = []
         self.total = 0.0
         self.order_number = order_number
-        self.valid_drinks = ["water", "coke", "nestea", "mountain dew", "canada dry"]
+        self.valid_drinks = ["water", "coke",
+                             "nestea", "mountain dew", "canada dry"]
 
     def view_valid_drinks(self):
         curr_string = "Drinks: "
@@ -43,12 +44,14 @@ class ShoppingCart:
             curr_string += str(topping_array)
             curr_string += "\n-----------------------------------"
 
-        curr_string += "\nCurrent subtotal is: " + str(self.total)
+        curr_string += "\nCurrent subtotal is: " + \
+            str("${:,.2f}".format(self.total))
         return curr_string
 
     def add_drink(self, drink, quantity):
         if drink.lower() in self.valid_drinks:
-            self.drinks[drink.lower()] = self.drinks.get(drink.lower(),0) + quantity
+            self.drinks[drink.lower()] = self.drinks.get(
+                drink.lower(), 0) + quantity
             self.total += (1.5 * quantity)
         else:
             print("Invalid drink option, try again.")
@@ -57,11 +60,13 @@ class ShoppingCart:
     def remove_drink(self, drink, quantity):
         print("Drinks: Water, Coke, Nestea, Mountain Dew, Canada Dry")
         if drink.lower() in self.valid_drinks:
-            if self.drinks.get(drink.lower(),0) - quantity >= 0 :
-                self.drinks[drink.lower()] = self.drinks.get(drink.lower(),0) - quantity
+            if self.drinks.get(drink.lower(), 0) - quantity >= 0:
+                self.drinks[drink.lower()] = self.drinks.get(
+                    drink.lower(), 0) - quantity
                 self.total -= (1.5 * quantity)
             else:
-                return_string = ("You are removing more drinks than you have. Try again.")
+                return_string = (
+                    "You are removing more drinks than you have. Try again.")
         else:
             print("Invalid drink option, try again.")
         return
@@ -83,7 +88,6 @@ class ShoppingCart:
     def update_price(self, old_price, new_price):
         self.total -= old_price
         self.total += new_price
-
 
     def clear_cart(self):
         self.drinks = {}

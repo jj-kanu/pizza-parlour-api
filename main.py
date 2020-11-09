@@ -12,8 +12,13 @@ def main():
 
 
 def main_menu_prompt():
-    return input("1 to add a pizza, 2 to add a drink, 3 to remove a drink, 4 to view cart, \
-        5 to cancel order, 6 to view menu, 7 to look up menu item. 0 to exit: ")
+    print("===============================================================================")
+    print("Menu Commands:")
+    print("-------------------------------------------------------------------------------")
+    print("1: Add Pizza to Cart, 2: Remove Pizza from Cart, 3: Edit Pizza in Cart")
+    print("4: Add Drink to Cart, 5: Remove Drink from Cart")
+    print("6: View Cart, 7: Cancel Order, 8: View Menu, 9: Look up Menu Item")
+    return input("Enter 10 to checkout or 0 to exit: ")
 
 
 def accept_input(main_menu_input):
@@ -72,7 +77,7 @@ def accept_input(main_menu_input):
             print(response.text)
 
     # Remove Pizza
-    if main_menu_input == "8":
+    if main_menu_input == "2":
         client_view_cart()
 
         pizza_id = input("What is the id of the pizza you want to remove? ")
@@ -87,7 +92,7 @@ def accept_input(main_menu_input):
             print(response.text)
 
     # Edit Pizza
-    if main_menu_input == "9":
+    if main_menu_input == "3":
         client_view_cart()
 
         pizza_id = input("What is the id of the pizza you want to edit? ")
@@ -176,33 +181,70 @@ def accept_input(main_menu_input):
             print(response.text)
 
     # Extract this out to helper functions
-    if main_menu_input == "2":
+    if main_menu_input == "4":
         url_string = client_add_drinks()
         response = requests.post(url_string)
         print(response.text)
 
-    if main_menu_input == "3":
+    if main_menu_input == "5":
         response = requests.get("http://127.0.0.1:5000/drinks-in-cart")
         print(response.text)
         url_string = client_remove_drinks()
         response = requests.post(url_string)
         print(response.text)
 
-    if main_menu_input == "4":
+    if main_menu_input == "6":
         client_view_cart()
 
-    if main_menu_input == "5":
+    if main_menu_input == "7":
         client_clear_cart()
 
-    if main_menu_input == "6":
+    if main_menu_input == "8":
         response = requests.get("http://127.0.0.1:5000/view-menu")
         print(response.text + "\n")
 
-    if main_menu_input == "7":
-        order_item = input("What item would you like to look up?")
+    if main_menu_input == "9":
+        order_item = input("What item would you like to look up? ")
         url_string = "http://127.0.0.1:5000/parse-menu/" + order_item
         response = requests.post(url_string)
         print(response.text)
+
+    if main_menu_input == "10":
+        client_view_cart()
+        confirmation = input(
+            "Are you sure you want to check out now?(Enter \'yes\' or \'no\') ")
+        while confirmation.lower() != "no" and confirmation.lower() != "yes":
+            confirmation = input(
+                "Are you sure you want to check out now?(Enter \'yes\' or \'no\') ")
+        if confirmation.lower() == "no":
+            print("Maybe order some more?")
+        else:
+            response = requests.get("http://127.0.0.1:5000/is-cart-empty")
+            if response.text == "":
+                print("Choose Delivery Method:")
+                print(
+                    "1: In-Store Pickup, 2: In-House Delivery, 3: Foodora, 4: Uber-Eats")
+                delivery_choice = input(
+                    "How would you like to get your food? ")
+                if int(delivery_choice) == 1:
+                    print("Your order will be ready for pickup in 20 minutes.")
+                else:
+                    address = input("Enter your address: ")
+                    if int(delivery_choice) == 2:
+                        url_string = "http://127.0.0.1:5000/csv-generation/" + address
+                        response = requests.post(url_string)
+                        print(response.text)
+                        print("Order Info sent to Delivery Man in CSV format")
+                    if int(delivery_choice) == 3:
+                        url_string = "http://127.0.0.1:5000/csv-generation/" + address
+                        response = requests.post(url_string)
+                        print(response.text)
+                        print("Order Info sent to Foodora in CSV format")
+                    if int(delivery_choice) == 4:
+                        # DO someething here
+                        return
+            else:
+                print(response.text)
 
     return main_menu_input
 

@@ -13,7 +13,7 @@ curr_cart = ShoppingCart(cart_id)
 
 @app.route('/pizza')
 def welcome_pizza():
-    return 'Welcome to Pizza Planet!'
+    return 'Welcome to Kanuli\'s Pizza!'
 
 
 # CART FUNCTIONS
@@ -80,6 +80,12 @@ def is_pizza_in_cart(id):
             return ""
     return "No such Pizza in cart."
 
+
+@app.route('/is-cart-empty', methods=['GET', 'POST'])
+def is_cart_empty():
+    if not curr_cart.drinks and not curr_cart.pizzas:
+        return "Cart is Empty"
+    return ""
 # Menu Functions
 
 
@@ -120,7 +126,7 @@ def parse_menu(order_item):
     elif order_item.lower() == "cheese":
         return_string = "Cheese is automatically applied to all pizzas. It's on the house."
     elif order_item.lower() in toppings:
-        return_string = "This item is a possible topping for a pizza.\
+        return_string = "This item is a possible topping for a pizza. \n \
             One topping is on the house, additional toppings are $1 each."
     else:
         return_string = "This item isn't recognized. Perhaps view full menu to check?"
@@ -215,7 +221,7 @@ def remove_topping_from_pizza(pizza_id, toppings_option):
     return "These toppings will not be on your Pizza."
 
 
-
+"""
 def checkout():
     curr_cart.view_cart()
     print("Your total is: " + (curr_cart.total * 1.13))
@@ -229,6 +235,7 @@ def checkout():
         return
     elif response == "n":
         return
+"""
 
 
 def ubereats_json_generation(address, order_details):
@@ -237,6 +244,21 @@ def ubereats_json_generation(address, order_details):
              "Order number": cart_id}
     json_string = json.dumps(order)
     return json_string
+
+
+@app.route('/csv-generation/<address>', methods=['GET', 'POST'])
+def csv_generation(address):
+    csv_string = "Order adress:, Order Details/Pizza, Order Details/Price,\
+        Order Details/Drinks, Order Number\n"
+    if curr_cart.drinks and not curr_cart.pizzas:
+        csv_string += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+            " ($1.50 each), " + str(cart_id) + "\n"
+        return csv_string
+    for pizza in curr_cart.pizzas:
+        csv_string += address + ", " + pizza.size + ": " + str(pizza.toppings) + ", " + \
+            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+            " ($1.50 each), " + str(cart_id) + "\n"
+    return csv_string
 
 
 if __name__ == "__main__":
