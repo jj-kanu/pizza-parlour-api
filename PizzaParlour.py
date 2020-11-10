@@ -237,12 +237,23 @@ def checkout():
         return
 """
 
-
-def ubereats_json_generation(address, order_details):
-    order = {"Order address": address,
-             "Order details": order_details,
-             "Order number": cart_id}
-    json_string = json.dumps(order)
+@app.route('/json-generation/<address>', methods=['GET', 'POST'])
+def ubereats_json_generation(address):
+    order_details=""
+    if curr_cart.drinks and not curr_cart.pizzas:
+        order_details += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+                      " ($1.50 each), " + str(cart_id) + "\n"
+        return order_details
+    for pizza in curr_cart.pizzas:
+        order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
+                      str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+                      " ($1.50 each), " + "\n"
+    order = {
+             "Order number": cart_id,
+             "Order address": address,
+             "Order details": order_details
+             }
+    json_string = json.dumps(order,indent=4, sort_keys=True)
     return json_string
 
 

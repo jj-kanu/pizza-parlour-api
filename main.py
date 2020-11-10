@@ -241,8 +241,10 @@ def accept_input(main_menu_input):
                         print(response.text)
                         print("Order Info sent to Foodora in CSV format")
                     if int(delivery_choice) == 4:
-                        # DO someething here
-                        return
+                        url_string = "http://127.0.0.1:5000/json-generation/" + address
+                        response = requests.post(url_string)
+                        print(response.text)
+                        print("Order Info sent to UberEats in JSON format")
             else:
                 print(response.text)
 
