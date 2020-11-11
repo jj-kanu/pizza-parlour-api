@@ -139,13 +139,6 @@ class Test(TestCase):
         self.assertEqual(pizza.dough, "")
         self.assertEqual(pizza.toppings, {})
 
-    def test_create_pizza_wrong_input(self):
-        output = io.StringIO()
-        sys.stdout = output
-        pizza = Pizza(5, 1)
-        sys.stdout = sys.__stdout__
-        self.assertEqual(output.getvalue(), "Please enter a valid Pizza type.\n")
-
         # add_topping TESTS
 
     def test_add_topping_to_default_pizza(self):
@@ -159,13 +152,11 @@ class Test(TestCase):
         self.assertEqual(pizza.toppings, {1: "pepperoni"})
 
     def test_add_topping_wrong_input(self):
-        output = io.StringIO()
-        sys.stdout = output
         pizza = Pizza(4, 1)
+        old_toppings = pizza.toppings.copy()
         pizza.add_topping(8)
-        sys.stdout = sys.__stdout__
-        self.assertEqual(output.getvalue(),
-                         "Please enter a valid topping option.\n")
+        self.assertEqual(pizza.toppings,
+                         old_toppings)
 
         # remove_topping TESTS
 
