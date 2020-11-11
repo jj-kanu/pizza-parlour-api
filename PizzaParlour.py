@@ -261,7 +261,7 @@ def ubereats_json_generation(address):
 
 @app.route('/csv-generation/<address>', methods=['GET', 'POST'])
 def csv_generation(address):
-    csv_string = "Order adress:, Order Details/Pizza, Order Details/Price,\
+    csv_string = "Order address:, Order Details/Pizza, Order Details/Price,\
         Order Details/Drinks, Order Number\n"
     if curr_cart.drinks and not curr_cart.pizzas:
         csv_string += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
@@ -273,6 +273,13 @@ def csv_generation(address):
             " ($1.50 each), " + str(cart_id) + "\n"
     return csv_string
 
+@app.route('/complete-order')
+def complete_order():
+    global curr_cart
+    global cart_id
+    cart_id += 1
+    curr_cart = ShoppingCart(cart_id)
+    return "Order completed"
 
 if __name__ == "__main__":
     app.run()
