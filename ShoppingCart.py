@@ -19,7 +19,7 @@ class ShoppingCart:
         return curr_string
 
     def view_cart(self):
-        curr_string = "Current Cart:\n"
+        curr_string = "\nCurrent Cart:\n"
         curr_string += "------------------------------\n"
         curr_string += "Drinks in cart: \n"
         for drinks in self.drinks:
@@ -42,10 +42,14 @@ class ShoppingCart:
             for topping in pizza.toppings:
                 topping_array.append(pizza.toppings[topping])
             curr_string += str(topping_array)
+            curr_string += "\nPizza Price: "
+            curr_string += str("${:,.2f}".format(pizza.price))
             curr_string += "\n-----------------------------------"
 
         curr_string += "\nCurrent subtotal is: " + \
             str("${:,.2f}".format(self.total))
+        curr_string += "\nCurrent total is: " + \
+            str("${:,.2f}".format(self.total*1.13))
         return curr_string
 
     def add_drink(self, drink, quantity):

@@ -64,6 +64,9 @@ class Pizza:
         elif(size_flag == 4):
             self.size = "Party Size"
 
+    def change_price(self, new_price):
+        self.price = float(new_price)
+
     def calculate_price(self):
         # Dough Prices
         self.price = 0

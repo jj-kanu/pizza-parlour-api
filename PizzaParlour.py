@@ -73,6 +73,13 @@ def clear_cart():
     return "Cart Cleared"
 
 
+@app.route('/are-there-drinks-in-cart', methods=['GET', 'POST'])
+def are_there_drinks_in_cart():
+    if curr_cart.drinks:
+        return ""
+    return "No Drinks in Cart"
+
+
 @app.route('/is-pizza-in-cart/<id>', methods=['GET', 'POST'])
 def is_pizza_in_cart(id):
     for pizza in curr_cart.pizzas:
@@ -221,39 +228,34 @@ def remove_topping_from_pizza(pizza_id, toppings_option):
     return "These toppings will not be on your Pizza."
 
 
-"""
-def checkout():
-    curr_cart.view_cart()
-    print("Your total is: " + (curr_cart.total * 1.13))
-    global cart_id
-    cart_id += 1
-    response = input("Do you want to checkout now? y/n")
-    while response != "y" or response != "n":
-        response = input("Do you want to checkout now? y/n")
-    if response == "y":
-        # We want to have them choose delivery method here
-        return
-    elif response == "n":
-        return
-"""
+# Administrative Functions
+@app.route('/edit-pizza-price/<pizza_id>/<new_price>', methods=['GET', 'POST'])
+def edit_pizza_price(pizza_id, new_price):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            previous_price = pizza.price
+            pizza.price = float(new_price)
+            curr_cart.update_price(previous_price, pizza.price)
+    return "Price of Pizza " + pizza_id + " has been changed to $" + new_price
+
 
 @app.route('/json-generation/<address>', methods=['GET', 'POST'])
 def ubereats_json_generation(address):
-    order_details=""
+    order_details = ""
     if curr_cart.drinks and not curr_cart.pizzas:
         order_details += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
-                      " ($1.50 each), " + str(cart_id) + "\n"
+            " ($1.50 each), " + str(cart_id) + "\n"
         return order_details
     for pizza in curr_cart.pizzas:
         order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
-                      str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
-                      " ($1.50 each), " + "\n"
+            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+            " ($1.50 each), " + "\n"
     order = {
-             "Order number": cart_id,
-             "Order address": address,
-             "Order details": order_details
-             }
-    json_string = json.dumps(order,indent=4, sort_keys=True)
+        "Order number": cart_id,
+        "Order address": address,
+        "Order details": order_details
+    }
+    json_string = json.dumps(order, indent=4, sort_keys=True)
     return json_string
 
 

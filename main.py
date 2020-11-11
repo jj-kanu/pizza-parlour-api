@@ -12,12 +12,14 @@ def main():
 
 
 def main_menu_prompt():
-    print("===============================================================================")
+    print("\n===============================================================================")
     print("Menu Commands:")
     print("-------------------------------------------------------------------------------")
     print("1: Add Pizza to Cart, 2: Remove Pizza from Cart, 3: Edit Pizza in Cart")
     print("4: Add Drink to Cart, 5: Remove Drink from Cart")
     print("6: View Cart, 7: Cancel Order, 8: View Menu, 9: Look up Menu Item")
+    print("Administrative Access - Edit Price of Pizza in Cart: Enter 98")
+    print("Administrative Access - Edit Price of Drinks in Cart: Enter 99")
     return input("Enter 10 to checkout or 0 to exit: ")
 
 
@@ -248,7 +250,46 @@ def accept_input(main_menu_input):
             else:
                 print(response.text)
 
+    if main_menu_input == "98":
+        client_view_cart()
+
+        pizza_id = input(
+            "What is the id of the pizza you want to change price? ")
+        url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
+        response = requests.post(url_string)
+        # Checks if Pizza is in cart
+        if response.text == "":
+            new_price = input("What is this pizza's new price? $")
+            while not is_price_float(new_price):
+                new_price = input(
+                    "What is this pizza's new price?(Enter in dollars) $")
+            if float(new_price) < 0:
+                print("This is an invalid price. Price will not be changed")
+                return
+            url_string = "http://127.0.0.1:5000/edit-pizza-price/" + pizza_id + "/" + new_price
+            response = requests.post(url_string)
+            print(response.text)
+        else:
+            print(response.text)
+
+    if main_menu_input == "99":
+        client_view_cart()
+        response = requests.post(
+            "http://127.0.0.1:5000/are-there-drinks-in-cart")
+        if response.text == "":
+            # Do stuff
+            return
+        else:
+            print(response.text)
     return main_menu_input
+
+
+def is_price_float(new_price):
+    try:
+        float(new_price)
+        return True
+    except ValueError:
+        return False
 
 
 def client_clear_cart():
