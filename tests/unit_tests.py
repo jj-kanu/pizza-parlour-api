@@ -1,5 +1,6 @@
 from PizzaParlour import *
 from ShoppingCart import *
+from main import *
 from unittest.mock import patch
 from unittest import TestCase
 import io
@@ -12,7 +13,7 @@ class Test(TestCase):
         response = app.test_client().get('/pizza')
 
         assert response.status_code == 200
-        assert response.data == b'Welcome to Pizza Planet!'
+        assert response.data == b'Welcome to Kanuli\'s Pizza!'
 
     def test_create_cart(self):
         cart = ShoppingCart(1)
