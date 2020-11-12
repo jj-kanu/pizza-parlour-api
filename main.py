@@ -77,7 +77,7 @@ def accept_input(main_menu_input):
 
     # Edit Pizza
     if main_menu_input == "3":
-        client_view_cart()
+        print(client_view_cart())
 
         pizza_id = input("What is the id of the pizza you want to edit? ")
         pizza_exists = is_pizza_in_cart(pizza_id)
@@ -119,7 +119,7 @@ def accept_input(main_menu_input):
         client_remove_drinks()
 
     if main_menu_input == "6":
-        client_view_cart()
+        print(client_view_cart())
 
     if main_menu_input == "7":
         client_clear_cart()
@@ -134,11 +134,11 @@ def accept_input(main_menu_input):
         checkout()
 
     if main_menu_input == "98":
-        client_view_cart()
+        print(client_view_cart())
 
         pizza_id = input(
             "What is the id of the pizza you want to change price? ")
-        pizza_exists = pizza_exists(pizza_id)
+        pizza_exists = is_pizza_in_cart(pizza_id)
         # Checks if Pizza is in cart
         if pizza_exists == "":
             new_price = input("What is this pizza's new price? $")
@@ -158,7 +158,7 @@ def accept_input(main_menu_input):
             print(pizza_exists)
 
     if main_menu_input == "99":
-        client_view_cart()
+        print(client_view_cart())
         drinks_in_cart = are_there_drinks_in_cart()
         if drinks_in_cart == "":
             new_price = input("What would you like the new pricing of drinks to be? $")
@@ -238,7 +238,7 @@ def custom_choose_dough():
 
 
 def remove_pizza():
-    client_view_cart()
+    print(client_view_cart())
     pizza_id = input("What is the id of the pizza you want to remove? ")
     pizza_exists = is_pizza_in_cart(pizza_id)
     # Checks if Pizza is in cart
@@ -360,7 +360,7 @@ def parse_menu():
 
 
 def checkout():
-    client_view_cart()
+    print(client_view_cart())
     confirmation = input(
         "Are you sure you want to check out now?(Enter \'yes\' or \'no\') ")
     while confirmation.lower() != "no" and confirmation.lower() != "yes":
@@ -443,7 +443,7 @@ def client_clear_cart():
 
 
 def client_view_cart():
-    print(curr_cart.view_cart())
+    return curr_cart.view_cart()
 
 
 def client_remove_drinks():

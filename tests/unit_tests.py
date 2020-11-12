@@ -27,24 +27,13 @@ class Test(TestCase):
         assert response2.data
 
     def test_is_cart_empty(self):
-        cart = ShoppingCart(0)
-        clear_cart()
-        response = app.test_client().get('/is-cart-empty')
-        assert response.status_code == 200
-        assert response.data == b"Cart is Empty"
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
+        assert get_client_cart().pizzas == []
+        assert cart.drinks == {}
+        assert cart.total == 0.0
 
-        pizza = Pizza(1, 0)
-        cart.add_pizza(pizza)
-        response2 = app.test_client().get('/is-cart-empty')
-        assert response2.status_code == 200
-        assert response2.data
-
-    def test_view_menu(self):
-        #TODO: the test_client() cannot open menu, hence we get error code 500.
-        menu = open('./../Menu.txt', 'r').read()
-        response = app.test_client().get('/view-menu')
-        assert response.status_code == 200
-        self.assertEqual(response.data.decode('utf-8'), menu)
 
     def test_parse_menu(self):
         response = app.test_client().get('/parse-menu/fail')
@@ -150,23 +139,28 @@ class Test(TestCase):
         accept_input("3")
         assert cart.pizzas[0].toppings == {}
 
-    def test_edit_pizza_price(self):
-        cart = get_cart()
-        clear_cart()
+    @patch('builtins.input')
+    def test_edit_pizza_price(self,input):
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         pizza = Pizza(3, 0)
         pizza.size = "Small"
         pizza.calculate_price()
         cart.add_pizza(pizza)
         assert cart.pizzas[0].price == 11
-        response = app.test_client().get("edit-pizza-price/0/9.87")
+        input.side_effect = ['0', '9.87']
+        accept_input("98")
+
         assert cart.pizzas[0].price == 9.87
-        assert response.status_code == 200
-        assert response.data == b"Price of Pizza 0 has been changed to $9.87"
 
     def test_csv_generation(self):
-        cart = get_cart()
-        add_drink_to_cart("water", 1)
-        response = app.test_client().get("csv-generation/123 sesame street")
+        client_clear_cart()
+        set_cart(99)
+        cart = get_client_cart()
+        client_add_drinks()
+        choose_delivery_method()
+        response = app.test_client().get("/csv-reception/<csv_string>")
         assert response.status_code == 200
         assert response.data
         pizza = Pizza(3, 0)
@@ -258,10 +252,12 @@ class Test(TestCase):
 
     @patch('builtins.input')
     def test_view_cart(self, input):
-        cart = get_cart()
-        input.side_effect = ['4', 'water', '1', 'coke', '2']
-        accept_input(input.side_effect)
-        self.assertEqual(get_client_cart(), cart.view_cart())
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
+        input.side_effect = ['water', '1']
+        accept_input("4")
+        self.assertEqual(client_view_cart(), cart.view_cart())
 
     def test_clear_cart(self):
         cart = get_client_cart()
@@ -270,14 +266,17 @@ class Test(TestCase):
         assert cart.drinks == {}
         assert cart.total == 0.0
 
-    def test_update_cart_price(self):
-        cart = get_cart()
-        clear_cart()
+    @patch('builtins.input')
+    def test_update_cart_price(self, input):
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         custom_pizza = Pizza(3, 2)
         custom_pizza.size = "Small"
         custom_pizza.calculate_price()
         cart.add_pizza(custom_pizza)
-        add_topping_to_pizza(2, "3")
+        input.side_effect = ['2', '2', '3', '0']
+        accept_input("3")
         custom_pizza.calculate_price()
         assert cart.total == 12
 
