@@ -392,20 +392,24 @@ def choose_delivery_method():
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Delivery Man in CSV format")
+                return "Order Info sent to Delivery Man in CSV format"
             if int(delivery_choice) == 3:
                 csv_string = csv_generation(address)
                 url_string = "http://127.0.0.1:5000/csv-reception/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Foodora in CSV format")
+                return "Order Info sent to Foodora in CSV format"
             if int(delivery_choice) == 4:
                 json_data = json_generation(address)
                 url_string = "http://127.0.0.1:5000/json-reception/"
                 response = requests.post(url_string, json=json_data)
                 print(response.text)
                 print("Order Info sent to UberEats in JSON format")
+                return "Order Info sent to UberEats in CSV format"
     else:
         print(cart_status)
+        return cart_status
 
 
 def is_price_float(new_price):
@@ -447,6 +451,7 @@ def client_view_cart():
 
 
 def client_remove_drinks():
+    return_string = ""
     print("Your current drinks are: ")
     print(curr_cart.get_drinks())
     drink_option = input_drink_name()
@@ -455,8 +460,10 @@ def client_remove_drinks():
         return_string = "Drink removed"
     else:
         return_string = "Invalid drink. Try again."
-    curr_cart.remove_drink(drink_option, int(drink_quantity))
+        return return_string
+    return_string = curr_cart.remove_drink(drink_option, int(drink_quantity))
     print(return_string)
+    return return_string
 
 
 
@@ -511,6 +518,7 @@ def json_generation(address):
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")
     print(response.text)
+    return "Finished Checkout"
 
 
 if __name__ == "__main__":

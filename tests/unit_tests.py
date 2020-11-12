@@ -13,18 +13,13 @@ class Test(TestCase):
 
     # Pizza Parlour Client-Called-Functions Tests --------------------------------
     def test_is_pizza_in_cart(self):
-        cart = ShoppingCart(0)
-        clear_cart()
-        response = app.test_client().get('/is-pizza-in-cart/0')
-
-        assert response.status_code == 200
-        assert response.data == b"No such Pizza in cart."
-
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         pizza = Pizza(1, 0)
         cart.add_pizza(pizza)
-        response2 = app.test_client().get('/is-pizza-in-cart/0')
-        assert response2.status_code == 200
-        assert response2.data
+        result = is_pizza_in_cart(0)
+        assert result == ""
 
     def test_is_cart_empty(self):
         set_cart(99)
@@ -99,16 +94,19 @@ class Test(TestCase):
         accept_input("3")
         assert cart.pizzas[0].dough == "Cauliflower"
 
-    def test_server_change_pizza_size(self):
-        cart = get_cart()
+    @patch('builtins.input')
+    def test_server_change_pizza_size(self, input):
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         pizza = Pizza(1, 0)
         pizza.size = "Small"
         cart.add_pizza(pizza)
         assert cart.pizzas[0].size == "Small"
-        response = app.test_client().get("/change-pizza-size/0/4")
+        input.side_effect = ['0','4', '4', '0']
+        accept_input("3")
         assert cart.pizzas[0].size == "Party Size"
-        assert response.status_code == 200
-        assert response.data == b"Size has been changed."
+
 
     @patch('builtins.input')
     def test_server_add_toppings_to_pizza(self, input):
@@ -155,9 +153,10 @@ class Test(TestCase):
         assert cart.pizzas[0].price == 9.87
 
     def test_csv_generation(self):
-        client_clear_cart()
         set_cart(99)
         cart = get_client_cart()
+        client_clear_cart()
+
         client_add_drinks()
         choose_delivery_method()
         response = app.test_client().get("/csv-reception/<csv_string>")
@@ -212,17 +211,26 @@ class Test(TestCase):
         client_remove_drinks()
         assert cart.drinks == {"water": 0}
 
-    def test_remove_invalid_drink(self):
-        cart = get_cart()
-        add_drink_to_cart("water", 1)
-        remove_drink_from_cart("pepsi", 1)
+    @patch('builtins.input')
+    def test_remove_invalid_drink(self, input):
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
+        input.side_effect = ['water', '1', 'pepsi', '1']
+        client_add_drinks()
+        result_string = client_remove_drinks()
         assert cart.drinks == {"water": 1}
+        assert result_string == "Invalid drink. Try again."
 
-    def test_remove_invalid_quantity_of_drinks(self):
-        cart = get_cart()
-        add_drink_to_cart("water", 1)
-        remove_drink_from_cart("water", 5)
-        assert cart.drinks == {"water": 2}
+    @patch('builtins.input')
+    def test_remove_invalid_quantity_of_drinks(self,input):
+        set_cart(1)
+        cart = get_client_cart()
+        input.side_effect = ['water', '1', 'water', '500']
+        client_add_drinks()
+        return_value = client_remove_drinks()
+        assert cart.drinks == {"water": 1}
+        assert return_value == "You are removing more drinks than you have. Try again."
 
     @patch('builtins.input', return_value="1")
     def test_add_pizza_to_cart(self, input):
@@ -235,19 +243,23 @@ class Test(TestCase):
 
     @patch('builtins.input', return_value=0)
     def test_remove_pizza_from_cart(self, input):
-        cart = get_cart()
-        # Reset the pizza array
-        cart.pizzas = []
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         add_pizza_to_cart(Pizza(1, 0))
-        remove_pizza_from_cart(input.return_value)
+        input.side_effect = ['0']
+        accept_input("2")
         assert cart.pizzas == []
 
-    @patch('builtins.input', return_value=1)
+    @patch('builtins.input')
     def test_invalid_remove_pizza_from_cart(self, input):
-        cart = get_cart()
+        set_cart(99)
+        cart = get_client_cart()
+        client_clear_cart()
         add_pizza_to_cart(Pizza(1, 0))
         old_pizza_array = cart.pizzas.copy()
-        remove_pizza_from_cart(input.return_value)
+        input.side_effect = ['1']
+        accept_input("2")
         assert cart.pizzas == old_pizza_array
 
     @patch('builtins.input')
