@@ -33,11 +33,7 @@ def accept_input(main_menu_input):
             pizza_option = input("What type of pizza would you like? ")
         # PREMADE PIZZAS
         if int(pizza_option) in range(1, 4):
-            size_option = choose_pizza_size()
-            url_string = "http://127.0.0.1:5000/choose-pizza/" + \
-                pizza_option + "/" + size_option
-            response = requests.post(url_string)
-            print("Pizza added to cart.")
+            premade_size_choice(pizza_option)
         # CUSTOM PIZZAS
         elif int(pizza_option) == 4:
             # Dough
@@ -151,6 +147,14 @@ def accept_input(main_menu_input):
         else:
             print(response.text)
     return main_menu_input
+
+
+def premade_size_choice(pizza_option):
+    size_option = choose_pizza_size()
+    url_string = "http://127.0.0.1:5000/choose-pizza/" + \
+                 pizza_option + "/" + size_option
+    response = requests.post(url_string)
+    print("Pizza added to cart.")
 
 
 def choose_pizza_size():
