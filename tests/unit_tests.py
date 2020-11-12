@@ -275,7 +275,7 @@ class Test(TestCase):
         custom_pizza.size = "Small"
         custom_pizza.calculate_price()
         cart.add_pizza(custom_pizza)
-        input.side_effect = ['2', '2', '3', '0']
+        input.side_effect = ['2', '2', '3', '0', '0']
         accept_input("3")
         custom_pizza.calculate_price()
         assert cart.total == 12
