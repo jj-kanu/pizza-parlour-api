@@ -14,12 +14,17 @@ def get_cart_id():
     cart_id = int(response.text)
     return cart_id
 
+def set_cart(cart_id):
+    global curr_cart
+    curr_cart = ShoppingCart(cart_id)
+
+def get_client_cart():
+    return curr_cart
 
 def main():
     response = requests.get("http://127.0.0.1:5000/pizza")
     print(response.text)
-    global curr_cart
-    curr_cart = ShoppingCart(get_cart_id())
+    set_cart(get_cart_id())
     main_menu_input = main_menu_prompt()
     while accept_input(main_menu_input) != '0':
         main_menu_input = main_menu_prompt()
@@ -433,8 +438,8 @@ def client_view_cart():
 def client_remove_drinks():
     print("Your current drinks are: ")
     print(curr_cart.get_drinks())
-    drink_option = input("What drink would you like to remove? ")
-    drink_quantity = input("How many? ")
+    drink_option = get_drink_name()
+    drink_quantity = get_drink_quantity()
     if curr_cart.drinks.get(drink_option.lower()):
         return_string = "Drink removed"
     else:
@@ -443,15 +448,24 @@ def client_remove_drinks():
     print(return_string)
 
 
+
 def client_add_drinks():
     print(curr_cart.view_valid_drinks())
-    drink_option = input("What drink would you like? ")
-    drink_quantity = input("How many? ")
+    drink_option = get_drink_name()
+    drink_quantity = get_drink_quantity()
     curr_cart.add_drink(drink_option, int(drink_quantity))
     if drink_option.lower() in curr_cart.view_valid_drinks():
         print("Drink added")
     else:
         print("Invalid drink. Try again.")
+
+
+def get_drink_quantity():
+    return input("How many? ")
+
+
+def get_drink_name():
+    return input("What drink would you like? ")
 
 
 def checkout_complete():
