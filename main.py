@@ -384,7 +384,8 @@ def choose_delivery_method():
                 print(response.text)
                 print("Order Info sent to Delivery Man in CSV format")
             if int(delivery_choice) == 3:
-                url_string = "http://127.0.0.1:5000/csv-generation/" + address
+                csv_string = csv_generation(address)
+                url_string = "http://127.0.0.1:5000/csv-generation/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Foodora in CSV format")
@@ -467,6 +468,18 @@ def input_drink_quantity():
 def input_drink_name():
     return input("What drink would you like? ")
 
+def csv_generation(address):
+    csv_string = "Order address:, Order Details for Pizza, Order Details for Price,\
+        Order Details for Drinks, Order Number\n"
+    if curr_cart.drinks and not curr_cart.pizzas:
+        csv_string += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+                      " ($1.50 each), " + str(get_cart_id()) + "\n"
+        return csv_string
+    for pizza in curr_cart.pizzas:
+        csv_string += address + ", " + pizza.size + ": " + str(pizza.toppings) + ", " + \
+                      str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+                      " ($1.50 each), " + str(get_cart_id()) + "\n"
+    return csv_string
 
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")
