@@ -2,6 +2,7 @@ from PizzaParlour import *
 from ShoppingCart import *
 from main import *
 from unittest.mock import patch
+from unittest.mock import Mock
 from unittest import TestCase
 import io
 import sys
@@ -13,6 +14,7 @@ class Test(TestCase):
     # Pizza Parlour Client-Called-Functions Tests --------------------------------
     def test_is_pizza_in_cart(self):
         cart = ShoppingCart(0)
+        clear_cart()
         response = app.test_client().get('/is-pizza-in-cart/0')
 
         assert response.status_code == 200
@@ -26,6 +28,7 @@ class Test(TestCase):
 
     def test_is_cart_empty(self):
         cart = ShoppingCart(0)
+        clear_cart()
         response = app.test_client().get('/is-cart-empty')
         assert response.status_code == 200
         assert response.data == b"Cart is Empty"
@@ -37,7 +40,8 @@ class Test(TestCase):
         assert response2.data
 
     def test_view_menu(self):
-        menu = open('Menu.txt', 'r').read()
+        #TODO: the test_client() cannot open menu, hence we get error code 500.
+        menu = open('./../Menu.txt', 'r').read()
         response = app.test_client().get('/view-menu')
         assert response.status_code == 200
         self.assertEqual(response.data.decode('utf-8'), menu)
@@ -84,6 +88,7 @@ class Test(TestCase):
         expected_pizza.dough = "Cauliflower"
         expected_pizza.toppings = {1: "pepperoni", 2: "bacon", 3: "pineapples"}
         cart = get_cart()
+        clear_cart()
         response = app.test_client().get("/create-pizza/3/1,2,3/2")
         assert cart.pizzas[0].id == expected_pizza.id
         assert cart.pizzas[0].size == expected_pizza.size
@@ -127,6 +132,7 @@ class Test(TestCase):
 
     def test_server_remove_topping_from_pizza(self):
         cart = get_cart()
+        clear_cart()
         pizza = Pizza(3, 0)
         pizza.size = "Small"
         cart.add_pizza(pizza)
@@ -139,6 +145,7 @@ class Test(TestCase):
 
     def test_edit_pizza_price(self):
         cart = get_cart()
+        clear_cart()
         pizza = Pizza(3, 0)
         pizza.size = "Small"
         pizza.calculate_price()
@@ -374,3 +381,13 @@ class Test(TestCase):
             pizza.add_topping(i)
         pizza.calculate_price()
         self.assertEqual(pizza.price, 24)
+
+    @patch('builtins.input', return_value="1")
+    def test_cli_input(self, input):
+        result = accept_input(input.return_value)
+        self.assertEqual("1", result)
+
+    @patch('builtins.input', return_value="4")
+    def test_cli_input_custom_pizza(self, input):
+        result = accept_input(input.return_value)
+        self.assertEqual("4", result)

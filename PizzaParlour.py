@@ -69,6 +69,8 @@ def remove_drink_from_cart(drink, quantity):
 
 @app.route('/clear-cart')
 def clear_cart():
+    global pizza_id
+    pizza_id = 0
     curr_cart.clear_cart()
     return "Cart Cleared"
 
