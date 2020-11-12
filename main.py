@@ -379,13 +379,14 @@ def choose_delivery_method():
         else:
             address = input("Enter your address: ")
             if int(delivery_choice) == 2:
-                url_string = "http://127.0.0.1:5000/csv-generation/" + address
+                csv_string = csv_generation(address)
+                url_string = "http://127.0.0.1:5000/csv-reception/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Delivery Man in CSV format")
             if int(delivery_choice) == 3:
                 csv_string = csv_generation(address)
-                url_string = "http://127.0.0.1:5000/csv-generation/" + csv_string
+                url_string = "http://127.0.0.1:5000/csv-reception/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Foodora in CSV format")

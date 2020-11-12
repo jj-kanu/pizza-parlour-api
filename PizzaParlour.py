@@ -88,8 +88,8 @@ def ubereats_json_generation(address):
     return json_string
 
 
-@app.route('/csv-generation/<csv_string>', methods=['GET', 'POST'])
-def csv_generation(csv_string):
+@app.route('/csv-reception/<csv_string>', methods=['GET', 'POST'])
+def csv_reception(csv_string):
     print("Server recieved csv: " + csv_string)
     return "Done"
 
