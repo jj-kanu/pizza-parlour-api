@@ -161,7 +161,14 @@ def accept_input(main_menu_input):
         client_view_cart()
         drinks_in_cart = are_there_drinks_in_cart()
         if drinks_in_cart == "":
-            return
+            new_price = input("What would you like the new pricing of drinks to be? $")
+            while not is_price_float(new_price):
+                new_price = input("What would you like the new pricing of drinks to be? (Enter in dollars) $")
+            if float(new_price) < 0:
+                print("This is an invalid price. Price will not be changed")
+                return
+            curr_cart.edit_drinks_price(int(new_price))
+
         else:
             print(drinks_in_cart)
     return main_menu_input
