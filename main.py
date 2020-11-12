@@ -1,5 +1,11 @@
 import sys
 import requests
+from Pizza import *
+from ShoppingCart import *
+
+pizza_id = 0
+cart_id = 0
+curr_cart = ShoppingCart(cart_id)
 
 
 def main():
@@ -10,6 +16,9 @@ def main():
         main_menu_input = main_menu_prompt()
     return
 
+def add_pizza_to_cart(pizza):
+    curr_cart.add_pizza(pizza)
+    return
 
 def main_menu_prompt():
     print("\n===============================================================================")
@@ -43,10 +52,7 @@ def accept_input(main_menu_input):
             # Size
             size_option = choose_pizza_size()
 
-            url_string = "http://127.0.0.1:5000/create-pizza/" + \
-                dough_option + "/" + list_of_toppings + "/" + size_option
-            response = requests.post(url_string)
-            print(response.text)
+            custom_pizza_creation(dough_option, list_of_toppings, size_option)
 
     # Remove Pizza
     if main_menu_input == "2":
@@ -57,10 +63,9 @@ def accept_input(main_menu_input):
         client_view_cart()
 
         pizza_id = input("What is the id of the pizza you want to edit? ")
-        url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
-        response = requests.post(url_string)
+        pizza_exists = is_pizza_in_cart(pizza_id)
         # Checks if Pizza is in cart
-        if response.text == "":
+        if pizza_exists == "":
             edit_flag = -1
             while int(edit_flag) != 0:
                 print(
@@ -86,20 +91,15 @@ def accept_input(main_menu_input):
                     print(
                         "Please pick a valid edit option or enter 0 to go back to menu.")
         else:
-            print(response.text)
+            print(pizza_exists)
 
     # Extract this out to helper functions
     if main_menu_input == "4":
-        url_string = client_add_drinks()
-        response = requests.post(url_string)
-        print(response.text)
+        client_add_drinks()
 
     if main_menu_input == "5":
-        response = requests.get("http://127.0.0.1:5000/drinks-in-cart")
-        print(response.text)
-        url_string = client_remove_drinks()
-        response = requests.post(url_string)
-        print(response.text)
+        are_there_drinks_in_cart()
+        client_remove_drinks()
 
     if main_menu_input == "6":
         client_view_cart()
@@ -121,10 +121,9 @@ def accept_input(main_menu_input):
 
         pizza_id = input(
             "What is the id of the pizza you want to change price? ")
-        url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
-        response = requests.post(url_string)
+        pizza_exists = pizza_exists(pizza_id)
         # Checks if Pizza is in cart
-        if response.text == "":
+        if pizza_exists == "":
             new_price = input("What is this pizza's new price? $")
             while not is_price_float(new_price):
                 new_price = input(
@@ -132,30 +131,48 @@ def accept_input(main_menu_input):
             if float(new_price) < 0:
                 print("This is an invalid price. Price will not be changed")
                 return
-            url_string = "http://127.0.0.1:5000/edit-pizza-price/" + pizza_id + "/" + new_price
-            response = requests.post(url_string)
-            print(response.text)
+            for pizza in curr_cart.pizzas:
+                if pizza.id == int(pizza_id):
+                    previous_price = pizza.price
+                    pizza.price = float(new_price)
+                    curr_cart.update_price(previous_price, pizza.price)
+            print("Price of Pizza " + pizza_id + " has been changed to $" + new_price)
         else:
-            print(response.text)
+            print(pizza_exists)
 
     if main_menu_input == "99":
         client_view_cart()
-        response = requests.post(
-            "http://127.0.0.1:5000/are-there-drinks-in-cart")
-        if response.text == "":
+        drinks_in_cart = are_there_drinks_in_cart()
+        if drinks_in_cart == "":
             return
         else:
-            print(response.text)
+            print(drinks_in_cart)
     return main_menu_input
 
 
 def premade_size_choice(pizza_option):
     size_option = choose_pizza_size()
-    url_string = "http://127.0.0.1:5000/choose-pizza/" + \
-                 pizza_option + "/" + size_option
-    response = requests.post(url_string)
+    global pizza_id
+    temp_pizza = Pizza(int(pizza_option), pizza_id)
+    pizza_id += 1
+    temp_pizza.choose_size(int(size_option))
+    temp_pizza.calculate_price()
+    add_pizza_to_cart(temp_pizza)
     print("Pizza added to cart.")
 
+def custom_pizza_creation(dough, topping, size):
+    global pizza_id
+    custom_pizza = Pizza(4, pizza_id)
+    pizza_id += 1
+    custom_pizza.choose_dough(int(dough))
+
+    for x in topping.split(","):
+        custom_pizza.add_topping(int(x))
+
+    custom_pizza.choose_size(int(size))
+    custom_pizza.calculate_price()
+    add_pizza_to_cart(custom_pizza)
+    print("Pizza added to cart.")
 
 def choose_pizza_size():
     print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
@@ -197,29 +214,36 @@ def custom_choose_dough():
 def remove_pizza():
     client_view_cart()
     pizza_id = input("What is the id of the pizza you want to remove? ")
-    url_string = "http://127.0.0.1:5000/is-pizza-in-cart/" + pizza_id
-    response = requests.post(url_string)
+    pizza_exists = is_pizza_in_cart(pizza_id)
     # Checks if Pizza is in cart
-    if response.text == "":
-        url_string = "http://127.0.0.1:5000/remove-pizza/" + pizza_id
-        requests.post(url_string)
+    if pizza_exists == "":
+        curr_cart.remove_pizza(int(pizza_id))
         print("Pizza removed from cart.")
     else:
-        print(response.text)
+        print(pizza_exists)
 
 
 def edit_size(pizza_id):
+    previous_price = 0.0
+    curr_price = 0.0
     print("Pizza Sizes: 1 = Small, 2 = Medium, 3 = Large, 4 = Party")
     size = input("What size would you like? ")
     while int(size) not in range(1, 5):
         print("Please enter a valid size number.")
         size = input("What size would you like? ")
-    url_string = "http://127.0.0.1:5000/change-pizza-size/" + pizza_id + "/" + size
-    response = requests.post(url_string)
-    print(response.text)
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            previous_price = pizza.price
+            pizza.choose_size(int(size))
+            pizza.calculate_price()
+            curr_price = pizza.price
+            curr_cart.update_price(previous_price, curr_price)
+    print("Size has been changed.")
 
 
 def remove_toppings(pizza_id):
+    previous_price = 0.0
+    curr_price = 0.0
     print("Enter Topping Number: 1: pepperoni, 2:bacon, 3:pineapple, 4:chicken,\n \
                         5: bell peppers, 6: jalapeno peppers")
     print("Enter 0 to Stop Removing Toppings")
@@ -236,13 +260,20 @@ def remove_toppings(pizza_id):
         else:
             print(
                 "Please enter a valid topping number or press 0 to stop.")
-    url_string = "http://127.0.0.1:5000/remove-topping-from-pizza/" + \
-                 pizza_id + "/" + list_of_toppings
-    response = requests.post(url_string)
-    print(response.text)
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            for x in list_of_toppings.split(","):
+                previous_price = pizza.price
+                pizza.remove_topping(int(x))
+                pizza.calculate_price()
+                curr_price = pizza.price
+                curr_cart.update_price(previous_price, curr_price)
+    print ("These toppings will not be on your Pizza.")
 
 
 def edit_toppings(pizza_id):
+    previous_price = 0.0
+    curr_price = 0.0
     print("Enter Topping Number: 1: pepperoni, 2:bacon, 3:pineapple, 4:chicken,\n \
                         5: bell peppers, 6: jalapeno peppers")
     print("Enter 0 to Stop Adding Toppings")
@@ -259,22 +290,34 @@ def edit_toppings(pizza_id):
         else:
             print(
                 "Please enter a valid topping number or press 0 to stop.")
-    url_string = "http://127.0.0.1:5000/add-topping-to-pizza/" + \
-                 pizza_id + "/" + list_of_toppings
-    response = requests.post(url_string)
-    print(response.text)
 
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            for x in list_of_toppings.split(","):
+                previous_price = pizza.price
+                pizza.add_topping(int(x))
+                pizza.calculate_price()
+                curr_price = pizza.price
+                curr_cart.update_price(previous_price, curr_price)
+    return "These toppings will be added to Pizza."
 
 def edit_dough(pizza_id):
+    previous_price = 0.0
+    curr_price = 0.0
     print(
         "Pizza Dough Number: 1 = White, 2 = Whole Wheat, 3 = Cauliflower")
     dough = input("What dough would you like? ")
     while int(dough) not in range(1, 4):
         print("Please enter a valid dough type number.")
         dough = input("What dough would you like? ")
-    url_string = "http://127.0.0.1:5000/change-pizza-dough/" + pizza_id + "/" + dough
-    response = requests.post(url_string)
-    print(response.text)
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(pizza_id):
+            previous_price = pizza.price
+            pizza.choose_dough(int(dough))
+            pizza.calculate_price()
+            curr_price = pizza.price
+            curr_cart.update_price(previous_price, curr_price)
+    print("Dough has been changed.")
 
 
 def view_menu():
@@ -305,8 +348,8 @@ def checkout():
 
 
 def choose_delivery_method():
-    response = requests.get("http://127.0.0.1:5000/is-cart-empty")
-    if response.text == "":
+    cart_status = is_cart_empty()
+    if cart_status == "":
         print("Choose Delivery Method:")
         print(
             "1: In-Store Pickup, 2: In-House Delivery, 3: Foodora, 4: Uber-Eats")
@@ -332,7 +375,7 @@ def choose_delivery_method():
                 print(response.text)
                 print("Order Info sent to UberEats in JSON format")
     else:
-        print(response.text)
+        print(cart_status)
 
 
 def is_price_float(new_price):
@@ -343,32 +386,54 @@ def is_price_float(new_price):
         return False
 
 
-def client_clear_cart():
-    response = requests.get("http://127.0.0.1:5000/clear-cart")
-    print(response.text)
+def is_pizza_in_cart(id):
+    for pizza in curr_cart.pizzas:
+        if pizza.id == int(id):
+            return ""
+    return "No such Pizza in cart."
 
+def is_cart_empty():
+    if not curr_cart.drinks and not curr_cart.pizzas:
+        return "Cart is Empty"
+    return ""
+
+def are_there_drinks_in_cart():
+    if curr_cart.drinks:
+        return ""
+    return "No Drinks in Cart"
+
+def client_clear_cart():
+    global pizza_id
+    pizza_id = 0
+    curr_cart.clear_cart()
+    print("Cart Cleared")
 
 def client_view_cart():
-    response = requests.get("http://127.0.0.1:5000/cart-string")
-    print(response.text)
+    print(curr_cart.view_cart())
 
 
 def client_remove_drinks():
+    print("Your current drinks are: ")
+    print(curr_cart.get_drinks())
     drink_option = input("What drink would you like to remove? ")
     drink_quantity = input("How many? ")
-    url_string = "http://127.0.0.1:5000/remove-drink/" + \
-        drink_option + "/" + drink_quantity
-    return url_string
+    if curr_cart.drinks.get(drink_option.lower()):
+        return_string = "Drink removed"
+    else:
+        return_string = "Invalid drink. Try again."
+    curr_cart.remove_drink(drink_option, int(drink_quantity))
+    print(return_string)
 
 
 def client_add_drinks():
-    response = requests.get("http://127.0.0.1:5000/valid-drinks")
-    print(response.text)
+    print(curr_cart.view_valid_drinks())
     drink_option = input("What drink would you like? ")
     drink_quantity = input("How many? ")
-    url_string = "http://127.0.0.1:5000/add-drink/" + \
-        drink_option + "/" + drink_quantity
-    return url_string
+    curr_cart.add_drink(drink_option, int(drink_quantity))
+    if drink_option.lower() in curr_cart.view_valid_drinks():
+        print("Drink added")
+    else:
+        print("Invalid drink. Try again.")
 
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")

@@ -62,7 +62,6 @@ class ShoppingCart:
         return
 
     def remove_drink(self, drink, quantity):
-        print("Drinks: Water, Coke, Nestea, Mountain Dew, Canada Dry")
         if drink.lower() in self.valid_drinks:
             if self.drinks.get(drink.lower(), 0) - quantity >= 0:
                 self.drinks[drink.lower()] = self.drinks.get(

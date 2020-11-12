@@ -32,9 +32,6 @@ def get_drinks_in_cart():
     return curr_cart.get_drinks()
 
 
-@app.route('/valid-drinks')
-def get_valid_drinks():
-    return curr_cart.view_valid_drinks()
 
 
 def add_pizza_to_cart(pizza):
@@ -42,59 +39,15 @@ def add_pizza_to_cart(pizza):
     return
 
 
-@app.route('/remove-pizza/<pizza_id>', methods=['GET', 'POST'])
-def remove_pizza_from_cart(pizza_id):
-    curr_cart.remove_pizza(int(pizza_id))
-    return
 
 
-@app.route('/add-drink/<drink>/<quantity>', methods=['GET', 'POST'])
-def add_drink_to_cart(drink, quantity):
-    curr_cart.add_drink(drink, int(quantity))
-    if drink.lower() in curr_cart.view_valid_drinks():
-        return "Drink added"
-    else:
-        return "Invalid drink. Try again."
 
 
-@app.route('/remove-drink/<drink>/<quantity>', methods=['GET', 'POST'])
-def remove_drink_from_cart(drink, quantity):
-    curr_cart.remove_drink(drink, int(quantity))
-    if curr_cart.drinks.get(drink.lower()):
-        return_string = "Drink removed"
-    else:
-        return_string = "Invalid drink. Try again."
-    return return_string
 
 
-@app.route('/clear-cart')
-def clear_cart():
-    global pizza_id
-    pizza_id = 0
-    curr_cart.clear_cart()
-    return "Cart Cleared"
 
 
-@app.route('/are-there-drinks-in-cart', methods=['GET', 'POST'])
-def are_there_drinks_in_cart():
-    if curr_cart.drinks:
-        return ""
-    return "No Drinks in Cart"
 
-
-@app.route('/is-pizza-in-cart/<id>', methods=['GET', 'POST'])
-def is_pizza_in_cart(id):
-    for pizza in curr_cart.pizzas:
-        if pizza.id == int(id):
-            return ""
-    return "No such Pizza in cart."
-
-
-@app.route('/is-cart-empty', methods=['GET', 'POST'])
-def is_cart_empty():
-    if not curr_cart.drinks and not curr_cart.pizzas:
-        return "Cart is Empty"
-    return ""
 # Menu Functions
 
 
@@ -228,17 +181,6 @@ def remove_topping_from_pizza(pizza_id, toppings_option):
                 curr_price = pizza.price
                 curr_cart.update_price(previous_price, curr_price)
     return "These toppings will not be on your Pizza."
-
-
-# Administrative Functions
-@app.route('/edit-pizza-price/<pizza_id>/<new_price>', methods=['GET', 'POST'])
-def edit_pizza_price(pizza_id, new_price):
-    for pizza in curr_cart.pizzas:
-        if pizza.id == int(pizza_id):
-            previous_price = pizza.price
-            pizza.price = float(new_price)
-            curr_cart.update_price(previous_price, pizza.price)
-    return "Price of Pizza " + pizza_id + " has been changed to $" + new_price
 
 
 @app.route('/json-generation/<address>', methods=['GET', 'POST'])
