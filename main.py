@@ -2,6 +2,7 @@ import sys
 import requests
 from Pizza import *
 from ShoppingCart import *
+import json
 
 pizza_id = 0
 
@@ -391,8 +392,9 @@ def choose_delivery_method():
                 print(response.text)
                 print("Order Info sent to Foodora in CSV format")
             if int(delivery_choice) == 4:
-                url_string = "http://127.0.0.1:5000/json-generation/" + address
-                response = requests.post(url_string)
+                json_data = json_generation(address)
+                url_string = "http://127.0.0.1:5000/json-reception/"
+                response = requests.post(url_string, json=json_data)
                 print(response.text)
                 print("Order Info sent to UberEats in JSON format")
     else:
@@ -481,6 +483,23 @@ def csv_generation(address):
                       str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
                       " ($1.50 each), " + str(get_cart_id()) + "\n"
     return csv_string
+
+def json_generation(address):
+    order_details = ""
+    if curr_cart.drinks and not curr_cart.pizzas:
+        order_details += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+                         " ($1.50 each), " + str(get_cart_id()) + "\n"
+        return order_details
+    for pizza in curr_cart.pizzas:
+        order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
+                         str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+                         " ($1.50 each), " + "\n"
+    order = {
+        "Order number": get_cart_id(),
+        "Order address": address,
+        "Order details": order_details
+    }
+    return order
 
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")
