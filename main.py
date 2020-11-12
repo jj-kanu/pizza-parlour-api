@@ -4,21 +4,32 @@ from Pizza import *
 from ShoppingCart import *
 
 pizza_id = 0
-cart_id = 0
-curr_cart = ShoppingCart(cart_id)
+
+#Initialize the cart
+curr_cart = None
+
+
+def get_cart_id():
+    response = requests.get("http://127.0.0.1:5000/cart")
+    cart_id = int(response.text)
+    return cart_id
 
 
 def main():
     response = requests.get("http://127.0.0.1:5000/pizza")
     print(response.text)
+    global curr_cart
+    curr_cart = ShoppingCart(get_cart_id())
     main_menu_input = main_menu_prompt()
     while accept_input(main_menu_input) != '0':
         main_menu_input = main_menu_prompt()
     return
 
+
 def add_pizza_to_cart(pizza):
     curr_cart.add_pizza(pizza)
     return
+
 
 def main_menu_prompt():
     print("\n===============================================================================")
@@ -160,6 +171,7 @@ def premade_size_choice(pizza_option):
     add_pizza_to_cart(temp_pizza)
     print("Pizza added to cart.")
 
+
 def custom_pizza_creation(dough, topping, size):
     global pizza_id
     custom_pizza = Pizza(4, pizza_id)
@@ -173,6 +185,7 @@ def custom_pizza_creation(dough, topping, size):
     custom_pizza.calculate_price()
     add_pizza_to_cart(custom_pizza)
     print("Pizza added to cart.")
+
 
 def choose_pizza_size():
     print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
@@ -268,7 +281,7 @@ def remove_toppings(pizza_id):
                 pizza.calculate_price()
                 curr_price = pizza.price
                 curr_cart.update_price(previous_price, curr_price)
-    print ("These toppings will not be on your Pizza.")
+    print("These toppings will not be on your Pizza.")
 
 
 def edit_toppings(pizza_id):
@@ -300,6 +313,7 @@ def edit_toppings(pizza_id):
                 curr_price = pizza.price
                 curr_cart.update_price(previous_price, curr_price)
     return "These toppings will be added to Pizza."
+
 
 def edit_dough(pizza_id):
     previous_price = 0.0
@@ -392,21 +406,25 @@ def is_pizza_in_cart(id):
             return ""
     return "No such Pizza in cart."
 
+
 def is_cart_empty():
     if not curr_cart.drinks and not curr_cart.pizzas:
         return "Cart is Empty"
     return ""
+
 
 def are_there_drinks_in_cart():
     if curr_cart.drinks:
         return ""
     return "No Drinks in Cart"
 
+
 def client_clear_cart():
     global pizza_id
     pizza_id = 0
     curr_cart.clear_cart()
     print("Cart Cleared")
+
 
 def client_view_cart():
     print(curr_cart.view_cart())
@@ -435,9 +453,11 @@ def client_add_drinks():
     else:
         print("Invalid drink. Try again.")
 
+
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")
     print(response.text)
+
 
 if __name__ == "__main__":
     main()
