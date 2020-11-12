@@ -65,6 +65,7 @@ class ShoppingCart:
         return
 
     def remove_drink(self, drink, quantity):
+        return_string = ""
         if drink.lower() in self.valid_drinks:
             if self.drinks.get(drink.lower(), 0) - quantity >= 0:
                 self.drinks[drink.lower()] = self.drinks.get(
@@ -75,7 +76,7 @@ class ShoppingCart:
                     "You are removing more drinks than you have. Try again.")
         else:
             print("Invalid drink option, try again.")
-        return
+        return return_string
 
     def add_pizza(self, pizza):
         self.pizzas.append(pizza)
