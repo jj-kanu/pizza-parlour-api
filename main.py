@@ -438,8 +438,8 @@ def client_view_cart():
 def client_remove_drinks():
     print("Your current drinks are: ")
     print(curr_cart.get_drinks())
-    drink_option = get_drink_name()
-    drink_quantity = get_drink_quantity()
+    drink_option = input_drink_name()
+    drink_quantity = input_drink_quantity()
     if curr_cart.drinks.get(drink_option.lower()):
         return_string = "Drink removed"
     else:
@@ -451,8 +451,8 @@ def client_remove_drinks():
 
 def client_add_drinks():
     print(curr_cart.view_valid_drinks())
-    drink_option = get_drink_name()
-    drink_quantity = get_drink_quantity()
+    drink_option = input_drink_name()
+    drink_quantity = input_drink_quantity()
     curr_cart.add_drink(drink_option, int(drink_quantity))
     if drink_option.lower() in curr_cart.view_valid_drinks():
         print("Drink added")
@@ -460,11 +460,11 @@ def client_add_drinks():
         print("Invalid drink. Try again.")
 
 
-def get_drink_quantity():
+def input_drink_quantity():
     return input("How many? ")
 
 
-def get_drink_name():
+def input_drink_name():
     return input("What drink would you like? ")
 
 
