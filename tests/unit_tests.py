@@ -516,7 +516,7 @@ class Test(TestCase):
         pizza.calculate_price()
         self.assertEqual(pizza.price, 13)
 
-    def test_price_calculated_default_pizza(self):
+    def test_price_calculated_default_pizza_custom_dough(self):
         pizza = Pizza(3, 1)
         pizza.choose_size(2)
         pizza.choose_dough(2)
@@ -546,7 +546,7 @@ class Test(TestCase):
         self.assertEqual(pizza.price, 24)
 
         # change_price TEST
-    def test_price_calculated_custom_pizza(self):
+    def test_price_calculated_custom_pizza_price_change(self):
         pizza = Pizza(4, 5)
         pizza.choose_dough(3)
         pizza.choose_size(4)
