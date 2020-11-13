@@ -26,8 +26,14 @@ choosing dough type, toppings, and size.
 Run unit tests with coverage by running `pytest --cov-report term --cov=. tests/unit_tests.py`
 
 ## Program Design
-something-something factory
-something-something server-side
+  The design pattern used for this project was that of a Factory. Upon our initial meeting, we realized that each pizza may have different features but all need shared characteristics: toppings, dough, and size. In the same vain, orders may contain different items in a cart, but all need shared characteristics like pizzas in cart, drinks in cart, and subtotal. In using Factory method design, we are able create these two classes with a high level cohesion and utilize them in `PizzaParlour.py`.
+
+  An order consists of making a ShoppingCart object and filling it with Pizza objects. Pizzas contain an id, a list of toppings, a size, a dough type, and their own price. ShoppingCarts contain an cart id, a list of pizzas, a list of drinks, and a subtotal made by accumulating all prices in it. As these two are only linked with functions to add Pizzas to ShoppingCart's pizza list, we are able to maintain low level of coupling between these two objects.
+
+  Originally, the program was made with most of the object creation done server side. After creating a new branch, a lot of these functions were moved to the client side, which was then merged back to main.
+
+#### Code Craftsmanship
+As pylint is used automatically in PyCharm, pylint was the linter used for code cleanliness.
 
 ## Pair Programming Experience
 ### Process
