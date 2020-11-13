@@ -122,7 +122,6 @@ class Test(TestCase):
         input.side_effect = ["1"]
         assert choose_delivery_method() == "Your order will be ready for pickup in 20 minutes."
 
-
     @patch('builtins.input')
     def test_choose_pizza(self, input):
         expected_pizza = Pizza(1, 0)
@@ -141,7 +140,6 @@ class Test(TestCase):
         input.side_effect = ['10', '2']
         assert choose_pizza_size() == '2'
 
-
     def test_create_pizza(self):
         expected_pizza = Pizza(4, 0)
         expected_pizza.size = "Medium"
@@ -150,7 +148,7 @@ class Test(TestCase):
         set_cart(1)
         cart = get_client_cart()
         client_clear_cart()
-        custom_pizza_creation(3,"1,2,3",2)
+        custom_pizza_creation(3, "1,2,3", 2)
         assert cart.pizzas[0].id == expected_pizza.id
         assert cart.pizzas[0].size == expected_pizza.size
         assert cart.pizzas[0].dough == expected_pizza.dough
@@ -165,7 +163,7 @@ class Test(TestCase):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
-        input.side_effect = ['4', '3', '1' , '2', '3', '0', '2']
+        input.side_effect = ['4', '3', '1', '2', '3', '0', '2']
         accept_input("1")
         assert cart.pizzas[0].id == expected_pizza.id
         assert cart.pizzas[0].size == expected_pizza.size
@@ -193,10 +191,9 @@ class Test(TestCase):
         pizza.size = "Small"
         cart.add_pizza(pizza)
         assert cart.pizzas[0].size == "Small"
-        input.side_effect = ['0','4', '4', '0']
+        input.side_effect = ['0', '4', '4', '0']
         accept_input("3")
         assert cart.pizzas[0].size == "Party Size"
-
 
     @patch('builtins.input')
     def test_server_add_toppings_to_pizza(self, input):
@@ -207,11 +204,10 @@ class Test(TestCase):
         pizza.size = "Small"
         cart.add_pizza(pizza)
         assert cart.pizzas[0].toppings == {1: "pepperoni"}
-        input.side_effect= ['0', '2', '2','3','0','0']
+        input.side_effect = ['0', '2', '2', '3', '0', '0']
         accept_input("3")
         assert cart.pizzas[0].toppings == {
             1: "pepperoni", 2: "bacon", 3: "pineapples"}
-
 
     @patch('builtins.input')
     def test_server_remove_topping_from_pizza(self, input):
@@ -220,7 +216,7 @@ class Test(TestCase):
         client_clear_cart()
         pizza = Pizza(3, 0)
         pizza.size = "Small"
-        cart.pizzas=[pizza]
+        cart.pizzas = [pizza]
         input.side_effect = ['0', '3', '1', '2', '4', '0', '0']
         assert cart.pizzas[0].toppings == {
             1: "pepperoni", 2: "bacon", 4: "chicken"}
@@ -228,7 +224,7 @@ class Test(TestCase):
         assert cart.pizzas[0].toppings == {}
 
     @patch('builtins.input')
-    def test_edit_pizza_price(self,input):
+    def test_edit_pizza_price(self, input):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
@@ -346,7 +342,7 @@ class Test(TestCase):
         assert result_string == "Invalid drink. Try again."
 
     @patch('builtins.input')
-    def test_remove_invalid_quantity_of_drinks(self,input):
+    def test_remove_invalid_quantity_of_drinks(self, input):
         set_cart(1)
         cart = get_client_cart()
         input.side_effect = ['water', '1', 'water', '500']
@@ -546,6 +542,7 @@ class Test(TestCase):
         self.assertEqual(pizza.price, 24)
 
         # change_price TEST
+
     def test_price_calculated_custom_pizza_price_change(self):
         pizza = Pizza(4, 5)
         pizza.choose_dough(3)
@@ -556,13 +553,13 @@ class Test(TestCase):
         pizza.change_price(50)
         self.assertEqual(pizza.price, 50)
 
-        #CSV and JSON generation test
+        # CSV and JSON generation test
 
     def test_csv_generated_properly(self):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
-        pizza = Pizza(1,0)
+        pizza = Pizza(1, 0)
         pizza.choose_size(1)
         pizza.calculate_price()
         cart.add_pizza(pizza)
@@ -596,14 +593,16 @@ class Test(TestCase):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
-        pizza = Pizza(1,0)
+        pizza = Pizza(1, 0)
         pizza.choose_size(1)
         pizza.calculate_price()
         cart.add_pizza(pizza)
         json_dict = json_generation("123 abc lane", 99)
         assert json_dict["Order address"] == "123 abc lane"
         assert json_dict["Order number"] == "99"
-        assert json_dict["Order details"] == "Pizza 0: Small: {1: \'pepperoni\'} Price of pizza: $9.00, Drinks: {} ($1.50 each)"
+        assert json_dict[
+                   "Order details"] == "Pizza 0: Small: {1: \'pepperoni\'} Price of pizza: $9.00, " \
+                                       "Drinks: {} ($1.50 each)"
 
     def test_json_generated_properly_only_drinks(self):
         set_cart(99)
