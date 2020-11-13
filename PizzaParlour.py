@@ -1,8 +1,9 @@
+import json
+
 from flask import Flask
 from flask import request
-from Pizza import *
+
 from ShoppingCart import *
-import json
 
 app = Flask("Assignment 2")
 

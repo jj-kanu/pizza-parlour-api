@@ -410,24 +410,25 @@ def choose_delivery_method():
                 "How would you like to get your food? ")
         if int(delivery_choice) == 1:
             print("Your order will be ready for pickup in 20 minutes.")
+            return "Your order will be ready for pickup in 20 minutes."
         else:
             address = input("Enter your address: ")
             if int(delivery_choice) == 2:
-                csv_string = csv_generation(address)
+                csv_string = csv_generation(address, get_cart_id())
                 url_string = "http://127.0.0.1:5000/csv-reception/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Delivery Man in CSV format")
                 return "Order Info sent to Delivery Man in CSV format"
             if int(delivery_choice) == 3:
-                csv_string = csv_generation(address)
+                csv_string = csv_generation(address, get_cart_id())
                 url_string = "http://127.0.0.1:5000/csv-reception/" + csv_string
                 response = requests.post(url_string)
                 print(response.text)
                 print("Order Info sent to Foodora in CSV format")
                 return "Order Info sent to Foodora in CSV format"
             if int(delivery_choice) == 4:
-                json_data = json_generation(address)
+                json_data = json_generation(address, get_cart_id())
                 url_string = "http://127.0.0.1:5000/json-reception/"
                 response = requests.post(url_string, json=json_data)
                 print(response.text)
@@ -518,32 +519,36 @@ def input_drink_name():
     return drink_name
 
 
-def csv_generation(address):
+def csv_generation(address, cart_id):
     csv_string = "Order address:, Order Details for Pizza, Order Details for Price,\
         Order Details for Drinks, Order Number\n"
     if curr_cart.drinks and not curr_cart.pizzas:
         csv_string += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
-            " ($1.50 each), " + str(get_cart_id()) + "\n"
+                      " ($1.50 each), " + str(cart_id) + "\n"
         return csv_string
     for pizza in curr_cart.pizzas:
         csv_string += address + ", " + pizza.size + ": " + str(pizza.toppings) + ", " + \
-            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
-            " ($1.50 each), " + str(get_cart_id()) + "\n"
+                      str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+                      " ($1.50 each), " + str(cart_id) + "\n"
     return csv_string
 
-
-def json_generation(address):
+def json_generation(address,cart_id):
     order_details = ""
     if curr_cart.drinks and not curr_cart.pizzas:
-        order_details += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
-            " ($1.50 each), " + str(get_cart_id()) + "\n"
-        return order_details
+        order_details += "No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+                         " ($1.50 each)"
+        order = {
+            "Order number": str(cart_id),
+            "Order address": address,
+            "Order details": order_details
+        }
+        return order
     for pizza in curr_cart.pizzas:
         order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
             str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
             " ($1.50 each), " + "\n"
     order = {
-        "Order number": get_cart_id(),
+        "Order number": str(cart_id),
         "Order address": address,
         "Order details": order_details
     }
