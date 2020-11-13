@@ -603,9 +603,9 @@ class Test(TestCase):
         json_dict = json_generation("123 abc lane", 99)
         assert json_dict["Order address"] == "123 abc lane"
         assert json_dict["Order number"] == "99"
-        assert json_dict["Order details"] == "Small: {1: \'pepperoni\'}, $9.00, {} ($1.50 each), \n"
+        assert json_dict["Order details"] == "Pizza 0: Small: {1: \'pepperoni\'} Price of pizza: $9.00, Drinks: {} ($1.50 each)"
 
-    def test_json_generated_properly_no_pizzas_or_drinks(self):
+    def test_json_generated_properly_only_drinks(self):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
@@ -613,4 +613,4 @@ class Test(TestCase):
         json_dict = json_generation("123 abc lane", 99)
         assert json_dict["Order address"] == "123 abc lane"
         assert json_dict["Order number"] == "99"
-        assert json_dict["Order details"] == "No Pizzas , No Pizza Prices, {'water': 5} ($1.50 each)"
+        assert json_dict["Order details"] == "You have no pizzas, Drinks: {'water': 5} ($1.50 each)"

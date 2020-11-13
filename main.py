@@ -535,7 +535,7 @@ def csv_generation(address, cart_id):
 def json_generation(address,cart_id):
     order_details = ""
     if curr_cart.drinks and not curr_cart.pizzas:
-        order_details += "No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
+        order_details += "You have no pizzas, " + "Drinks: " + str(curr_cart.drinks) + \
                          " ($1.50 each)"
         order = {
             "Order number": str(cart_id),
@@ -544,9 +544,10 @@ def json_generation(address,cart_id):
         }
         return order
     for pizza in curr_cart.pizzas:
-        order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
-            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
-            " ($1.50 each), " + "\n"
+        order_details += "Pizza " + str(pizza.id) + ": " + pizza.size + ": " + str(pizza.toppings) + " Price of pizza: " + \
+            str("${:,.2f}".format(pizza.price)) + ", "
+    order_details +=  "Drinks: " + str(curr_cart.drinks) + \
+            " ($1.50 each)"
     order = {
         "Order number": str(cart_id),
         "Order address": address,
