@@ -1,5 +1,8 @@
 class ShoppingCart:
 
+    global drinks_price
+    drinks_price = 1.5
+
     def __init__(self, order_number):
         self.drinks = {}
         self.pizzas = []
@@ -56,24 +59,24 @@ class ShoppingCart:
         if drink.lower() in self.valid_drinks:
             self.drinks[drink.lower()] = self.drinks.get(
                 drink.lower(), 0) + quantity
-            self.total += (1.5 * quantity)
+            self.total += (drinks_price * quantity)
         else:
             print("Invalid drink option, try again.")
         return
 
     def remove_drink(self, drink, quantity):
-        print("Drinks: Water, Coke, Nestea, Mountain Dew, Canada Dry")
+        return_string = ""
         if drink.lower() in self.valid_drinks:
             if self.drinks.get(drink.lower(), 0) - quantity >= 0:
                 self.drinks[drink.lower()] = self.drinks.get(
                     drink.lower(), 0) - quantity
-                self.total -= (1.5 * quantity)
+                self.total -= (drinks_price * quantity)
             else:
                 return_string = (
                     "You are removing more drinks than you have. Try again.")
         else:
             print("Invalid drink option, try again.")
-        return
+        return return_string
 
     def add_pizza(self, pizza):
         self.pizzas.append(pizza)
@@ -92,6 +95,17 @@ class ShoppingCart:
     def update_price(self, old_price, new_price):
         self.total -= old_price
         self.total += new_price
+
+    def edit_drinks_price(self, new_value):
+        global drinks_price
+        old_drinks_price = drinks_price
+        drinks_price = new_value
+        total_drink_count = 0
+        for drink_number in self.drinks.values():
+            total_drink_count += drink_number
+        self.total -= old_drinks_price * total_drink_count
+        self.total += drinks_price * total_drink_count
+
 
     def clear_cart(self):
         self.drinks = {}
