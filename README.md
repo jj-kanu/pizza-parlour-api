@@ -2,7 +2,7 @@
 Welcome to the Kanuli's Pizza terminal. Here you have the ability to fill a cart with pizzas and drinks, along with the administrative ability to change the price of each pizza item and drinks in cart.
 
 ## Instructions
-First, run the main flask module by running `python3 PizzaParlour.py`. Then run `python3 main.py` to reach the main menu.
+First, run the main flask module by running `python3 PizzaParlour.py`. Then run `python3 main.py` in a separate terminal to reach the main menu.
 
 Here, you can enter several numerical inputs to proceed:
 1. **Add Pizza to Cart:** Here, you will have the option to enter 1-3 to choose a size of one of the Kanuli Specials or enter 4 to create your own custom pizza: 
@@ -26,20 +26,22 @@ choosing dough type, toppings, and size.
 Run unit tests with coverage by running `pytest --cov-report term --cov=. tests/unit_tests.py`
 
 ## Program Design
-  The design pattern used for this project was that of a Factory. Upon our initial meeting, we realized that each pizza may have different features but all need shared characteristics: toppings, dough, and size. In the same vain, orders may contain different items in a cart, but all need shared characteristics like pizzas in cart, drinks in cart, and subtotal. In using Factory method design, we are able create these two classes with a high level cohesion and utilize them in `PizzaParlour.py`.
+  The design pattern used for this project was that of a Factory. Upon our initial meeting, we realized that each pizza may have different features but all need shared characteristics: toppings, dough, and size. In the same vein, orders may contain different items in a cart, but all need shared characteristics like pizzas in cart, drinks in cart, and subtotal. In using Factory method design, we are able create these two classes with a high level cohesion and utilize them in `PizzaParlour.py`.
 
   An order consists of making a ShoppingCart object and filling it with Pizza objects. Pizzas contain an id, a list of toppings, a size, a dough type, and their own price. ShoppingCarts contain an cart id, a list of pizzas, a list of drinks, and a subtotal made by accumulating all prices in it. As these two are only linked with functions to add Pizzas to ShoppingCart's pizza list, we are able to maintain low level of coupling between these two objects.
 
   Originally, the program was made with most of the object creation done server side. After creating a new branch, a lot of these functions were moved to the client side, which was then merged back to main.
+  
+  On completion of order, provided that the user selected a delivery service, a csv or JSON is sent to the server. In your server terminal, you will see the csv/JSON printed in the terminal. Of course, it does not show on the client terminal as that is a detail the user does not need to be made aware of.
 
 #### Code Craftsmanship
-As pylint is used automatically in PyCharm, pylint was the linter used for code cleanliness.
+PyCharm was used to keep a good programming/formatting style.
 
 ## Pair Programming Experience
 ### Process
   Before anything was written down, the first topic of discussion was program design. Over a zoom call, a shared document was made which listed what classes would need to be created, their order to be completed based on importance, and which tasks on this list we could designate to be pair programmed. The first on this list was a Pizza class.
   
-  For the implementation of `Pizza.py`, JJ was the driver with Aaron as the navigator. This session entailed the creation of the class and the implementation of its initial main functions to: create a custom pizza, choose from premade pizzas, and edit a pizza by adding or removing toppings. 
+  For the implementation of `Pizza.py`, JJ was the driver with Aaron was the navigator. This session entailed the creation of the class and the implementation of its initial main functions to: create a custom pizza, choose from premade pizzas, and edit a pizza by adding or removing toppings. 
   
   The following pair programming session had the roles reversed with the purpose now being the creation of `ShoppingCart.py`. This session would include the creation of the class and its initial main functions: adding and removing drinks to carts, adding and removing pizza objects to cart, and clearing cart. The foundation of `PizzaParlour.py` was also made during this time to utilize the Pizza and Cart objects with functions to place items in cart, but not enough that the program was yet functional.
   
