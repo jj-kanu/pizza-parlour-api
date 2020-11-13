@@ -6,7 +6,7 @@ import json
 
 pizza_id = 0
 
-#Initialize the cart
+# Initialize the cart
 curr_cart = None
 
 
@@ -15,12 +15,15 @@ def get_cart_id():
     cart_id = int(response.text)
     return cart_id
 
+
 def set_cart(cart_id):
     global curr_cart
     curr_cart = ShoppingCart(cart_id)
 
+
 def get_client_cart():
     return curr_cart
+
 
 def main():
     response = requests.get("http://127.0.0.1:5000/pizza")
@@ -54,9 +57,12 @@ def accept_input(main_menu_input):
         print(
             "Enter 1 for Pepperoni, 2 for Cheese, 3 for Meat Lover's, 4 for Custom Pizza.")
         pizza_option = input("What type of pizza would you like? ")
-        while int(pizza_option) not in range(1, 5):
-            print("Invalid pizza type. Please enter a valid pizza type.")
-            pizza_option = input("What type of pizza would you like? ")
+        while pizza_option == "" or int(pizza_option) not in range(1, 5):
+            try:
+                print("Invalid pizza type. Please enter a valid pizza type.")
+                pizza_option = input("What type of pizza would you like? ")
+            except SyntaxError:
+                pizza_option = None
         # PREMADE PIZZAS
         if int(pizza_option) in range(1, 4):
             premade_size_choice(pizza_option)
@@ -84,26 +90,30 @@ def accept_input(main_menu_input):
         # Checks if Pizza is in cart
         if pizza_exists == "":
             edit_flag = -1
-            while int(edit_flag) != 0:
+            while edit_flag == "" or int(edit_flag) != 0:
                 print(
                     "Edit Pizza: 1 = Change Dough, 2 = Add Toppings, 3 = Remove Toppings, 4 = Change Size\n\
                         Enter 0 to confirm changes and return to menu.")
                 edit_flag = input(
                     "What would you like to change about your pizza? ")
-                # Edit Dough
-                if int(edit_flag) == 1:
-                    edit_dough(pizza_id)
-                # Add Toppings
-                elif int(edit_flag) == 2:
-                    edit_toppings(pizza_id)
+                if edit_flag != "":
+                    # Edit Dough
+                    if int(edit_flag) == 1:
+                        edit_dough(pizza_id)
+                    # Add Toppings
+                    elif int(edit_flag) == 2:
+                        edit_toppings(pizza_id)
 
-                # Remove Toppings
-                elif int(edit_flag) == 3:
-                    remove_toppings(pizza_id)
+                    # Remove Toppings
+                    elif int(edit_flag) == 3:
+                        remove_toppings(pizza_id)
 
-                # Edit size
-                elif int(edit_flag) == 4:
-                    edit_size(pizza_id)
+                    # Edit size
+                    elif int(edit_flag) == 4:
+                        edit_size(pizza_id)
+                    else:
+                        print(
+                            "Please pick a valid edit option or enter 0 to go back to menu.")
                 else:
                     print(
                         "Please pick a valid edit option or enter 0 to go back to menu.")
@@ -153,7 +163,8 @@ def accept_input(main_menu_input):
                     previous_price = pizza.price
                     pizza.price = float(new_price)
                     curr_cart.update_price(previous_price, pizza.price)
-            print("Price of Pizza " + pizza_id + " has been changed to $" + new_price)
+            print("Price of Pizza " + pizza_id +
+                  " has been changed to $" + new_price)
         else:
             print(pizza_exists)
 
@@ -161,9 +172,11 @@ def accept_input(main_menu_input):
         print(client_view_cart())
         drinks_in_cart = are_there_drinks_in_cart()
         if drinks_in_cart == "":
-            new_price = input("What would you like the new pricing of drinks to be? $")
+            new_price = input(
+                "What would you like the new pricing of drinks to be? $")
             while not is_price_float(new_price):
-                new_price = input("What would you like the new pricing of drinks to be? (Enter in dollars) $")
+                new_price = input(
+                    "What would you like the new pricing of drinks to be? (Enter in dollars) $")
             if float(new_price) < 0:
                 print("This is an invalid price. Price will not be changed")
                 return
@@ -203,7 +216,7 @@ def custom_pizza_creation(dough, topping, size):
 def choose_pizza_size():
     print("Enter 1 for Small, 2 for Medium, 3 for Large, 4 for Party Size.")
     size_option = input("What size pizza do you want? ")
-    while int(size_option) not in range(1, 5):
+    while size_option == "" or int(size_option) not in range(1, 5):
         print("Invalid size. Please enter a valid pizza size flag.")
         size_option = input("What size pizza do you want? ")
     return size_option
@@ -217,6 +230,8 @@ def custom_choose_topping():
     topping_option = -1
     while int(topping_option) != 0:
         topping_option = input("What toppings do you want to add? ")
+        while topping_option == "":
+            topping_option = input("What toppings do you want to add? ")
         if int(topping_option) in range(1, 7):
             list_of_toppings += str(topping_option) + ","
             print("Topping added.")
@@ -231,7 +246,7 @@ def custom_choose_topping():
 def custom_choose_dough():
     print("Enter 1 for White, 2 for Whole Wheat, 3 for Cauliflower")
     dough_option = input("What type of dough would you like? ")
-    while int(dough_option) not in range(1, 4):
+    while dough_option == "" or int(dough_option) not in range(1, 4):
         print("Invalid dough type. Please enter a valid dough type flag.")
         dough_option = input("What type of dough would you like? ")
     return dough_option
@@ -254,7 +269,7 @@ def edit_size(pizza_id):
     curr_price = 0.0
     print("Pizza Sizes: 1 = Small, 2 = Medium, 3 = Large, 4 = Party")
     size = input("What size would you like? ")
-    while int(size) not in range(1, 5):
+    while size == "" or int(size) not in range(1, 5):
         print("Please enter a valid size number.")
         size = input("What size would you like? ")
     for pizza in curr_cart.pizzas:
@@ -278,6 +293,9 @@ def remove_toppings(pizza_id):
     while int(topping_option) != 0:
         topping_option = input(
             "What toppings do you want to remove? ")
+        while topping_option == "":
+            topping_option = input(
+                "What toppings do you want to remove? ")
         if int(topping_option) in range(1, 7):
             list_of_toppings += str(topping_option) + ","
             print("Topping Removed.")
@@ -308,6 +326,9 @@ def edit_toppings(pizza_id):
     while int(topping_option) != 0:
         topping_option = input(
             "What toppings do you want to add? ")
+        while topping_option == "":
+            topping_option = input(
+                "What toppings do you want to add? ")
         if int(topping_option) in range(1, 7):
             list_of_toppings += str(topping_option) + ","
             print("Topping added.")
@@ -334,7 +355,7 @@ def edit_dough(pizza_id):
     print(
         "Pizza Dough Number: 1 = White, 2 = Whole Wheat, 3 = Cauliflower")
     dough = input("What dough would you like? ")
-    while int(dough) not in range(1, 4):
+    while dough == "" or int(dough) not in range(1, 4):
         print("Please enter a valid dough type number.")
         dough = input("What dough would you like? ")
     for pizza in curr_cart.pizzas:
@@ -354,6 +375,8 @@ def view_menu():
 
 def parse_menu():
     order_item = input("What item would you like to look up? ")
+    if order_item == "":
+        order_item = "fail"
     url_string = "http://127.0.0.1:5000/parse-menu/" + order_item
     response = requests.post(url_string)
     print(response.text)
@@ -382,6 +405,9 @@ def choose_delivery_method():
             "1: In-Store Pickup, 2: In-House Delivery, 3: Foodora, 4: Uber-Eats")
         delivery_choice = input(
             "How would you like to get your food? ")
+        while delivery_choice == "" or int(delivery_choice) not in range(1, 5):
+            delivery_choice = input(
+                "How would you like to get your food? ")
         if int(delivery_choice) == 1:
             print("Your order will be ready for pickup in 20 minutes.")
         else:
@@ -421,9 +447,10 @@ def is_price_float(new_price):
 
 
 def is_pizza_in_cart(id):
-    for pizza in curr_cart.pizzas:
-        if pizza.id == int(id):
-            return ""
+    if id != "":
+        for pizza in curr_cart.pizzas:
+            if pizza.id == int(id):
+                return ""
     return "No such Pizza in cart."
 
 
@@ -466,7 +493,6 @@ def client_remove_drinks():
     return return_string
 
 
-
 def client_add_drinks():
     print(curr_cart.view_valid_drinks())
     drink_option = input_drink_name()
@@ -479,41 +505,50 @@ def client_add_drinks():
 
 
 def input_drink_quantity():
-    return input("How many? ")
+    drink_quan = input("How many? ")
+    while drink_quan == "":
+        drink_quan = input("How many? ")
+    return drink_quan
 
 
 def input_drink_name():
-    return input("What drink would you like? ")
+    drink_name = input("What drink would you like? ")
+    while drink_name == "":
+        drink_name = input("What drink would you like? ")
+    return drink_name
+
 
 def csv_generation(address):
     csv_string = "Order address:, Order Details for Pizza, Order Details for Price,\
         Order Details for Drinks, Order Number\n"
     if curr_cart.drinks and not curr_cart.pizzas:
         csv_string += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
-                      " ($1.50 each), " + str(get_cart_id()) + "\n"
+            " ($1.50 each), " + str(get_cart_id()) + "\n"
         return csv_string
     for pizza in curr_cart.pizzas:
         csv_string += address + ", " + pizza.size + ": " + str(pizza.toppings) + ", " + \
-                      str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
-                      " ($1.50 each), " + str(get_cart_id()) + "\n"
+            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+            " ($1.50 each), " + str(get_cart_id()) + "\n"
     return csv_string
+
 
 def json_generation(address):
     order_details = ""
     if curr_cart.drinks and not curr_cart.pizzas:
         order_details += address + ", No Pizzas , No Pizza Prices, " + str(curr_cart.drinks) + \
-                         " ($1.50 each), " + str(get_cart_id()) + "\n"
+            " ($1.50 each), " + str(get_cart_id()) + "\n"
         return order_details
     for pizza in curr_cart.pizzas:
         order_details += pizza.size + ": " + str(pizza.toppings) + ", " + \
-                         str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
-                         " ($1.50 each), " + "\n"
+            str("${:,.2f}".format(pizza.price)) + ", " + str(curr_cart.drinks) + \
+            " ($1.50 each), " + "\n"
     order = {
         "Order number": get_cart_id(),
         "Order address": address,
         "Order details": order_details
     }
     return order
+
 
 def checkout_complete():
     response = requests.get("http://127.0.0.1:5000/complete-order")
