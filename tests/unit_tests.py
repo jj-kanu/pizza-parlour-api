@@ -53,6 +53,14 @@ class Test(TestCase):
         assert response6.status_code == 200
         assert response6.data == b"Yup, that's what we serve. You can make your own or get a special.\n \
                 Prices may vary based on size, dough, and number of toppings."
+        response7 = app.test_client().get('/parse-menu/cheese pizza')
+        assert response7.status_code == 200
+        assert response7.data == b"One of the Kanuli specials. Made on White Bread Dough \n \
+            (S: 9/ M: 11/ L: 13/ P: 18)"
+        response8 = app.test_client().get('/parse-menu/meat lover\'s pizza')
+        assert response8.status_code == 200
+        assert response8.data == b"One of the Kanuli specials. Made on White Bread Dough \n \
+            (S: 11/ M: 13/ L: 15/ P: 20)"
 
     @patch('builtins.input')
     def test_choose_pizza(self, input):
@@ -152,23 +160,17 @@ class Test(TestCase):
 
         assert cart.pizzas[0].price == 9.87
 
-    def test_csv_generation(self):
+    @patch('builtins.input')
+    def test_edit_drinks_price(self, input):
         set_cart(99)
         cart = get_client_cart()
         client_clear_cart()
+        cart.add_drink("water", 5)
+        assert (cart.drinks.get("water") * 1.5) == 7.50
+        input.side_effect = ['2']
+        accept_input("99")
 
-        client_add_drinks()
-        choose_delivery_method()
-        response = app.test_client().get("/csv-reception/<csv_string>")
-        assert response.status_code == 200
-        assert response.data
-        pizza = Pizza(3, 0)
-        pizza.size = "Small"
-        pizza.calculate_price()
-        cart.add_pizza(pizza)
-        response2 = app.test_client().get("csv-generation/123 sesame street")
-        assert response2.status_code == 200
-        assert response2.data
+        assert cart.total == 10.0
 
     # Shopping Cart Tests -------------------------------------------------------
     def test_pizza(self):
@@ -397,13 +399,3 @@ class Test(TestCase):
             pizza.add_topping(i)
         pizza.calculate_price()
         self.assertEqual(pizza.price, 24)
-
-    @patch('builtins.input', return_value="1")
-    def test_cli_input(self, input):
-        result = accept_input(input.return_value)
-        self.assertEqual("1", result)
-
-    @patch('builtins.input', return_value="4")
-    def test_cli_input_custom_pizza(self, input):
-        result = accept_input(input.return_value)
-        self.assertEqual("4", result)
