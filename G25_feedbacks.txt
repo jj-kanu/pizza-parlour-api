@@ -1,0 +1,33 @@
+Pair Programming (13.5/15):
+The report contained some good reflections on what went well and not well in the process.
+It would be nice to be more explicit on which commits were done with pair programming. It is a bit hard to figure out from the commit messages.
+It would be also nice to also talk about what can be done better next time in terms of pair programming.
+
+
+Program design (17/20):
+The report briefly talked about the design patterns used in the program (specially the Factory Design Pattern).
+The program design is good in general.
+
+Functionality (25/25):
+Have simple input error checking against wrong inputs.
+CLI is mostly easy to use and all the functionality that were tested worked (good to have a number associated with each item to minimize user's typing effort).
+
+
+Tests (19/20):
+The project achieved around 90% coverage (85%). 
+All tests can run successfully without running the server.
+
+Code Craftsmanship (8/10):
+There are comments included for some of the classes explaining its usage.
+The coding style looks clean and consistent.
+The report mentioned the names of the tools being used for development.
+
+md explanation and organization (8/10):
+The readme file included good set of instructions on how to run and test the program.
+Would be nice to include the set of dependencies that need to be installed for the program too.
+The readme file has instructions on how to run the program.
+
+
+
+total: 90.5
+
